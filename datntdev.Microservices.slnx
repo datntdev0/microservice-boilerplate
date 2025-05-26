@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/apps/" Id="7c63bae4-df19-4ce5-95db-24106adc3ff3">
+    <Project Path="apps/datntdev.Microservices.AppHost/datntdev.Microservices.AppHost.csproj" Id="40a288d0-50a1-4038-9648-9955c553e967" />
+  </Folder>
+  <Folder Name="/libs/" Id="01284de2-5dae-483f-b32a-197ff0eb16db">
+    <Project Path="libs/datntdev.Microservices.ServiceDefaults/datntdev.Microservices.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/services/" Id="02ea681e-c7d8-13c7-8484-4ac65e1b71e8">
+    <Project Path="svcs/datntdev.Microservice.Identity.Web.Host/datntdev.Microservice.Identity.Web.Host.csproj" />
+  </Folder>
+  <Folder Name="/_/" Id="8ec462fd-d22e-90a8-e5ce-7e832ba40c5d">
+    <File Path="common.props" />
+  </Folder>
+</Solution>

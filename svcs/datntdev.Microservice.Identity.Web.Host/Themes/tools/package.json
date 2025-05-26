@@ -1,0 +1,49 @@
+{
+  "name": "microservice",
+  "version": "8.3.0",
+  "description": "Packages used by yarn, npm, gulp and webpack",
+  "main": "gulpfile.js",
+  "type": "module",
+  "dependencies": {
+    "bootstrap": "5.3.5"
+  },
+  "devDependencies": {
+    "chalk": "^5.4.1",
+    "copy-webpack-plugin": "^13.0.0",
+    "css-minimizer-webpack-plugin": "^7.0.2",
+    "del": "^8.0.0",
+    "glob": "^11.0.1",
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-connect": "^5.0.0",
+    "gulp-dart-sass": "^1.1.0",
+    "gulp-if": "^3.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-rewrite-css": "^1.1.2",
+    "gulp-rtlcss": "^2.0.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-terser": "^2.1.0",
+    "lazypipe": "^1.0.2",
+    "lodash": "^4.17.21",
+    "mini-css-extract-plugin": "^2.9.2",
+    "rtlcss-webpack-plugin": "^4.0.7",
+    "terser-webpack-plugin": "^5.3.14",
+    "webpack": "^5.99.5",
+    "webpack-exclude-assets-plugin": "^0.1.1",
+    "webpack-merge-and-include-globally": "^2.3.4",
+    "webpack-messages": "^2.0.4",
+    "yargs": "^17.7.2"
+  },
+  "scripts": {
+    "build": "gulp"
+  },
+  "overrides": {
+    "gulp-dart-sass": {
+      "sass": "1.70.0"
+    }
+  },
+  "resolutions": {
+    "gulp-dart-sass/sass": "1.70.0"
+  }
+}

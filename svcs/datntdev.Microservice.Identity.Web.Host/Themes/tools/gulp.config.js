@@ -11,7 +11,7 @@ const gulpConfig = {
 			cssSourcemaps: false,
 		},
 		path: {
-			src: "../src/{theme}/{demo}",
+			src: "../src",
 			node_modules: "node_modules",
 		},
 		dist: ["../../wwwroot"],

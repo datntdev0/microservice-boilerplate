@@ -7,7 +7,19 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="wwwroot\img\**" />
+	  <Content Remove="wwwroot\img\**" />
+	  <EmbeddedResource Remove="wwwroot\img\**" />
+	  <None Remove="wwwroot\img\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\libs\datntdev.Microservices.ServiceDefaults\datntdev.Microservices.ServiceDefaults.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Themes\src\sass\layout\" />
+	  <Folder Include="Themes\src\sass\helpers\" />
 	</ItemGroup>
 
 </Project>

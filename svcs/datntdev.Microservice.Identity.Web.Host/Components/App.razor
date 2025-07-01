@@ -2,18 +2,18 @@
 <html lang="en">
 
 <head>
+    <base href="/" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <base href="/" />
-    <link rel="stylesheet" href="@Assets["css/style.css"]" />
+    <link rel="stylesheet" href="@Assets["bundles/css/style.css"]" />
     <ImportMap />
-    <HeadOutlet @rendermode="InteractiveServer" />
+    <HeadOutlet />
 </head>
 
 <body>
-    <Routes @rendermode="InteractiveServer" />
+    <Routes />
     <script src="_framework/blazor.web.js"></script>
-    <script src="@Assets["js/scripts.js"]"></script>
+    <script src="@Assets["bundles/js/scripts.js"]"></script>
 </body>
 
 </html>

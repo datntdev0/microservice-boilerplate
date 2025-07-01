@@ -1,6 +1,6 @@
 {
   "name": "microservice",
-  "version": "8.3.0",
+  "version": "0.1.0",
   "description": "Packages used by yarn, npm, gulp and webpack",
   "main": "gulpfile.js",
   "type": "module",

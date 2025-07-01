@@ -14,7 +14,7 @@ const gulpConfig = {
 			src: "../src",
 			node_modules: "node_modules",
 		},
-		dist: ["../../wwwroot"],
+		dist: ["../../wwwroot/bundles"],
 	},
 	build: {
 		base: {

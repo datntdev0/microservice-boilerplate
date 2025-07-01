@@ -5,13 +5,8 @@
 // Initialize
 //@import "init";
 
-// Components
-//@import "components/components";
-
-// Layout
-//@import "layout/base/layout";
-//@import "layout/layout";
-
+// Variables
+@import "variables";
 
 // Bootstrap initializaton
 @import "bootstrap/scss/functions";
@@ -20,4 +15,14 @@
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";
+// Extended bootstrap utilities
+@import "helpers/utilities";
+// Bootstrap components
 @import "bootstrap/scss/bootstrap";
+
+// Components
+@import "helpers/flex";
+
+// Layout
+@import "layout";
+

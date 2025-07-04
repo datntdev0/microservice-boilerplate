@@ -10,4 +10,8 @@
 		<ProjectReference Include="..\..\libs\datntdev.Microservices.ServiceDefaults\datntdev.Microservices.ServiceDefaults.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Themes\src\sass\vendors\" />
+	</ItemGroup>
+
 </Project>

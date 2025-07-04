@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using datntdev.Microservice.Identity.Web.Host.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,8 @@ namespace datntdev.Microservice.Identity.Web.Host.Components.Pages.Auth
 {
     public partial class SignIn
     {
+        private readonly SweetAlertModel _sweetAlertOptions = new();
+
         private EditContext _editContext = default!;
 
         [Inject]
@@ -16,6 +19,7 @@ namespace datntdev.Microservice.Identity.Web.Host.Components.Pages.Auth
 
         [SupplyParameterFromQuery]
         private string ReturnUrl { get; set; } = string.Empty;
+
 
         protected override void OnInitialized()
         {
@@ -31,8 +35,20 @@ namespace datntdev.Microservice.Identity.Web.Host.Components.Pages.Auth
 
         private void HandleValidSubmit()
         {
+            const string defaultEmail = "admin@datntdev.com";
+            const string defaultPassword = "12345678";
+
             // Simulate successful sign-in
-            NavigationManager.NavigateTo(ReturnUrl, true);
+            if (Model.Email == defaultEmail && Model.Password == defaultPassword)
+            {
+                NavigationManager.NavigateTo(ReturnUrl, true);
+            }
+            else
+            {
+                _sweetAlertOptions.Title = "Sign in failure";
+                _sweetAlertOptions.Text = "Invalid email or password. Please try again.";
+                _sweetAlertOptions.Icon = "error";
+            }
         }
 
         public class InputModel

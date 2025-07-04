@@ -5,7 +5,8 @@
   "main": "gulpfile.js",
   "type": "module",
   "dependencies": {
-    "bootstrap": "5.3.5"
+    "bootstrap": "5.3.5",
+    "sweetalert2": "^11.22.2"
   },
   "devDependencies": {
     "del": "^8.0.0",

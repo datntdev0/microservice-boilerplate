@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace datntdev.Microservice.Identity.Web.Host.Components.Pages.Auth
 {
-    public partial class SignIn
+    public partial class SignUp
     {
         private EditContext _editContext = default!;
 
-        [Inject]
+        [Inject]    
         private NavigationManager NavigationManager { get; set; } = default!;
 
         [SupplyParameterFromForm]
@@ -31,7 +31,7 @@ namespace datntdev.Microservice.Identity.Web.Host.Components.Pages.Auth
 
         private void HandleValidSubmit()
         {
-            // Simulate successful sign-in
+            // Simulate successful sign-up
             NavigationManager.NavigateTo(ReturnUrl, true);
         }
 
@@ -43,8 +43,17 @@ namespace datntdev.Microservice.Identity.Web.Host.Components.Pages.Auth
             public string? Email { get; set; }
 
             [Required]
+            [DataType(DataType.Text)]
+            public string? DisplayName { get; set; }
+
+            [Required]
             [DataType(DataType.Password)]
             public string? Password { get; set; }
+
+            [Required]
+            [DataType(DataType.Password)]
+            [Compare(nameof(Password), ErrorMessage = "The password and confirmation password do not match.")]
+            public string? ConfirmPassword { get; set; }
         }
     }
 }

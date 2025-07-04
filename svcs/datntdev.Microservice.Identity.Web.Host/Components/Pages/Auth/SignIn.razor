@@ -35,15 +35,15 @@
     </div>
 
     <div class="mt-8">
-      <InputText class="@($"form-control bg-transparent {GetInvalidClass(nameof(InputModel.Email))}")"
-                 @bind-Value="@InputModel.Email" placeholder="Email" type="email" />
-      <ValidationMessage For="@(() => InputModel.Email)" class="invalid-feedback" />
+      <InputText class="@($"form-control bg-transparent {GetInvalidClass(nameof(Model.Email))}")"
+                 @bind-Value="@Model.Email" placeholder="Email" type="email" />
+      <ValidationMessage For="@(() => Model.Email)" class="invalid-feedback" />
     </div>
 
     <div class="mt-8">
-      <InputText class="@($"form-control bg-transparent {GetInvalidClass(nameof(InputModel.Password))}")"
-                 @bind-Value="@InputModel.Password" placeholder="Password" type="password" />
-      <ValidationMessage For="@(() => InputModel.Password)" class="invalid-feedback" />
+      <InputText class="@($"form-control bg-transparent {GetInvalidClass(nameof(Model.Password))}")"
+                 @bind-Value="@Model.Password" placeholder="Password" type="password" />
+      <ValidationMessage For="@(() => Model.Password)" class="invalid-feedback" />
     </div>
 
     <div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">

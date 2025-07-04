@@ -12,6 +12,12 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents();
 
+        // Register mideware as transient instances
+        builder.Services.AddTransient<Middlewares.AppSettingCookieMiddleware>();
+
+        // Register scoped services
+        builder.Services.AddScoped<Services.AppSettingService>();
+
         var app = builder.Build();
 
         app.MapDefaultEndpoints();
@@ -27,6 +33,7 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAntiforgery();
+        app.UseMiddleware<Middlewares.AppSettingCookieMiddleware>();
 
         app.MapStaticAssets();
         app.MapRazorComponents<App>();

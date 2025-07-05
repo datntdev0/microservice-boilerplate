@@ -1,0 +1,9 @@
+<Project>
+    <PropertyGroup>
+        <!-- Set the default target framework -->
+        <TargetFramework>net9.0</TargetFramework>
+
+        <!-- Enable nullable reference types -->
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+</Project>

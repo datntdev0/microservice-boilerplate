@@ -1,4 +1,5 @@
 using datntdev.Microservices.Identity.Web.Host.Components;
+using Microsoft.EntityFrameworkCore;
 
 namespace datntdev.Microservices.Identity.Web.Host;
 
@@ -11,6 +12,9 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddRazorComponents();
+
+        // Register Database Context
+        AddDatabaseContext(builder);
 
         // Register mideware as transient instances
         builder.Services.AddTransient<Middlewares.AppSettingCookieMiddleware>();
@@ -39,5 +43,13 @@ public class Program
         app.MapRazorComponents<App>();
 
         app.Run();
+    }
+
+    private static void AddDatabaseContext(WebApplicationBuilder builder)
+    {
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        var migrationsAssembly = typeof(Program).Assembly.GetName().Name;
+        builder.Services.AddDbContext<Application.Repositories.Data.ApplicationDbContext>(
+            opt => opt.UseSqlServer(connectionString, o => o.MigrationsAssembly(migrationsAssembly)));
     }
 }

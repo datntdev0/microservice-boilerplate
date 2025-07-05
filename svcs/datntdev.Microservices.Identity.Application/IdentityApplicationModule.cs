@@ -1,10 +1,13 @@
-﻿using System.Runtime.CompilerServices;
+﻿using datntdev.Microservices.Common.Modular;
+using datntdev.Microservices.Identity.Contracts;
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("datntdev.Microservices.Identity.Web.Host")]
 
 namespace datntdev.Microservices.Identity.Application
 {
-    public class IdentityApplicationModule
+    [DependOn(typeof(IdentityContractsModule))]
+    public class IdentityApplicationModule : BaseModule
     {
     }
 }

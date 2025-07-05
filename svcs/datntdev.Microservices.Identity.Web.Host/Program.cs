@@ -1,76 +1,51 @@
-using datntdev.Microservices.Identity.Application.Authorization.Roles;
-using datntdev.Microservices.Identity.Application.Authorization.Users;
+using datntdev.Microservices.Identity.Web.Host;
 using datntdev.Microservices.Identity.Web.Host.Components;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using datntdev.Microservices.Identity.Web.Host.Middlewares;
+using datntdev.Microservices.ServiceDefaults.Hosting;
 
-namespace datntdev.Microservices.Identity.Web.Host;
+ServiceBootstrapBuilder.CreateWebApplication<Startup>(args).Run();
 
-public class Program
+internal class Startup(IWebHostEnvironment env) : ServiceStartup(env)
 {
-    public static void Main(string[] args)
+    public override void ConfigureServices(IServiceCollection services)
     {
-        var builder = WebApplication.CreateBuilder(args);
-        builder.AddServiceDefaults();
+        services.AddDefaultOpenTelemetry(_hostingEnvironment, _hostingConfiguration);
+        services.AddServiceBootstrap<IdentityWebHostModule>(_hostingConfiguration);
+        services.AddDefaultServiceDiscovery();
 
         // Add services to the container.
-        builder.Services.AddRazorComponents();
-        builder.Services.AddControllers();
+        services.AddRazorComponents();
+        services.AddControllers();
 
-        // Register Database Context
-        AddDatabaseContext(builder);
+        // Add Authentication and Authorization services
+        services.AddCascadingAuthenticationState();
+        services.AddAuthentication().AddCookie(x => x.LoginPath = "/auth/signin");
+        services.AddAuthorization().AddAuthorizationCore();
 
-        // Register mideware as transient instances
-        builder.Services.AddTransient<Middlewares.AppSettingCookieMiddleware>();
+        // Add Middlewares as Transient Instances
+        services.AddTransient<AppSettingCookieMiddleware>();
+    }
 
-        // Register Identity Core
-        AddIdentityCore(builder);
-        builder.Services.AddCascadingAuthenticationState();
-        builder.Services.AddAuthenticationCore();
-        builder.Services.AddAuthorization().AddAuthorizationCore();
-
-        // Register scoped services
-        builder.Services.AddScoped<Services.AppSettingService>();
-
-        var app = builder.Build();
-
-        app.MapDefaultEndpoints();
-
-        // Configure the HTTP request pipeline.
-        if (!app.Environment.IsDevelopment())
-        {
-            app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            app.UseHsts();
-        }
+    public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseServiceBootstrap<IdentityWebHostModule>(_hostingConfiguration);
 
         app.UseHttpsRedirection();
+        app.UseRouting();
+
         app.UseAuthentication();
         app.UseAuthorization();
+
         app.UseAntiforgery();
 
-        app.UseMiddleware<Middlewares.AppSettingCookieMiddleware>();
+        app.UseEndpoints(configure =>
+        {
+            configure.MapControllers();
+            configure.MapRazorComponents<App>();
+            configure.MapStaticAssets();
+        });
 
-        app.MapStaticAssets();
-        app.MapRazorComponents<App>();
-        app.MapControllers();
-
-        app.Run();
-    }
-
-    private static void AddDatabaseContext(WebApplicationBuilder builder)
-    {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        var migrationsAssembly = typeof(Program).Assembly.GetName().Name;
-        builder.Services.AddDbContext<Application.Repositories.Data.ApplicationDbContext>(
-            opt => opt.UseSqlServer(connectionString, o => o.MigrationsAssembly(migrationsAssembly)));
-    }
-
-    private static void AddIdentityCore(WebApplicationBuilder builder)
-    {
-        builder.Services.AddIdentity<AppUserEntity, AppRoleEntity>()
-            .AddEntityFrameworkStores<Application.Repositories.Data.ApplicationDbContext>()
-            .AddSignInManager()
-            .AddDefaultTokenProviders();
+        app.UseMiddleware<AppSettingCookieMiddleware>();
     }
 }
+

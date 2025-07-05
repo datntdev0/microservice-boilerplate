@@ -24,7 +24,7 @@ namespace datntdev.Microservice.Identity.Web.Host.Middlewares
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false,
+                Secure = context.Request.IsHttps,
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTimeOffset.UtcNow.AddDays(30) // Set expiration to 30 days
             };

@@ -8,10 +8,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\libs\datntdev.Microservices.ServiceDefaults\datntdev.Microservices.ServiceDefaults.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Themes\src\sass\vendors\" />
+		<ProjectReference Include="..\datntdev.Microservices.Identity.Application\datntdev.Microservices.Identity.Application.csproj" />
 	</ItemGroup>
 
 </Project>

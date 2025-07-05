@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations;
 
-namespace datntdev.Microservice.Identity.Web.Host.Components.Pages.Auth
+namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
 {
     public partial class SignUp
     {

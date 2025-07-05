@@ -16,7 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\svcs\datntdev.Microservice.Identity.Web.Host\datntdev.Microservice.Identity.Web.Host.csproj" />
+		<ProjectReference Include="..\..\svcs\datntdev.Microservices.Identity.Web.Host\datntdev.Microservices.Identity.Web.Host.csproj" />
 	</ItemGroup>
 
 </Project>

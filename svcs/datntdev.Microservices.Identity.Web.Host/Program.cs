@@ -1,6 +1,6 @@
-using datntdev.Microservice.Identity.Web.Host.Components;
+using datntdev.Microservices.Identity.Web.Host.Components;
 
-namespace datntdev.Microservice.Identity.Web.Host;
+namespace datntdev.Microservices.Identity.Web.Host;
 
 public class Program
 {

@@ -1,6 +1,6 @@
-﻿using datntdev.Microservice.Identity.Web.Host.Models;
+﻿using datntdev.Microservices.Identity.Web.Host.Models;
 
-namespace datntdev.Microservice.Identity.Web.Host.Services
+namespace datntdev.Microservices.Identity.Web.Host.Services
 {
     public class AppSettingService
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace datntdev.Microservice.Identity.Web.Host.Components
+namespace datntdev.Microservices.Identity.Web.Host.Components
 {
     public partial class App
     {

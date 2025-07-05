@@ -1,4 +1,4 @@
-﻿namespace datntdev.Microservice.Identity.Web.Host.Models
+﻿namespace datntdev.Microservices.Identity.Web.Host.Models
 {
     public class AppSettingModel
     {

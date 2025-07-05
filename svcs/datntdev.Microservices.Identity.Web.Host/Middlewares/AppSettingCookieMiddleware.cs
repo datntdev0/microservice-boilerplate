@@ -1,9 +1,9 @@
-﻿using datntdev.Microservice.Identity.Web.Host.Models;
-using datntdev.Microservice.Identity.Web.Host.Services;
+﻿using datntdev.Microservices.Identity.Web.Host.Models;
+using datntdev.Microservices.Identity.Web.Host.Services;
 using System.Text;
 using System.Text.Json;
 
-namespace datntdev.Microservice.Identity.Web.Host.Middlewares
+namespace datntdev.Microservices.Identity.Web.Host.Middlewares
 {
     public class AppSettingCookieMiddleware : IMiddleware
     {

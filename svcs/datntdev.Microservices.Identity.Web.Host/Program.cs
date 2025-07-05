@@ -1,4 +1,7 @@
+using datntdev.Microservices.Identity.Application.Authorization.Roles;
+using datntdev.Microservices.Identity.Application.Authorization.Users;
 using datntdev.Microservices.Identity.Web.Host.Components;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace datntdev.Microservices.Identity.Web.Host;
@@ -12,12 +15,19 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddRazorComponents();
+        builder.Services.AddControllers();
 
         // Register Database Context
         AddDatabaseContext(builder);
 
         // Register mideware as transient instances
         builder.Services.AddTransient<Middlewares.AppSettingCookieMiddleware>();
+
+        // Register Identity Core
+        AddIdentityCore(builder);
+        builder.Services.AddCascadingAuthenticationState();
+        builder.Services.AddAuthenticationCore();
+        builder.Services.AddAuthorization().AddAuthorizationCore();
 
         // Register scoped services
         builder.Services.AddScoped<Services.AppSettingService>();
@@ -35,12 +45,15 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseAntiforgery();
+
         app.UseMiddleware<Middlewares.AppSettingCookieMiddleware>();
 
         app.MapStaticAssets();
         app.MapRazorComponents<App>();
+        app.MapControllers();
 
         app.Run();
     }
@@ -51,5 +64,13 @@ public class Program
         var migrationsAssembly = typeof(Program).Assembly.GetName().Name;
         builder.Services.AddDbContext<Application.Repositories.Data.ApplicationDbContext>(
             opt => opt.UseSqlServer(connectionString, o => o.MigrationsAssembly(migrationsAssembly)));
+    }
+
+    private static void AddIdentityCore(WebApplicationBuilder builder)
+    {
+        builder.Services.AddIdentity<AppUserEntity, AppRoleEntity>()
+            .AddEntityFrameworkStores<Application.Repositories.Data.ApplicationDbContext>()
+            .AddSignInManager()
+            .AddDefaultTokenProviders();
     }
 }

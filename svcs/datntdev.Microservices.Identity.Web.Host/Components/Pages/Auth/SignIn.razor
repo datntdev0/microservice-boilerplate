@@ -1,10 +1,9 @@
 ﻿@page "/auth/signin"
 
-<div class="d-flex flex-center flex-column flex-column-fluid pb-lg-20">
+<div class="d-flex flex-center flex-column flex-column-fluid">
   <EditForm class="form w-100" novalidate="novalidate"
             FormName="signin" EditContext="@_editContext"
-            OnValidSubmit="@HandleValidSubmit">
-
+            OnValidSubmit="@HandleValidSubmitAsync">
     <DataAnnotationsValidator />
 
     <div class="text-center mb-11">

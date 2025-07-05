@@ -1,6 +1,6 @@
 ﻿@page "/auth/signup"
 
-<div class="d-flex flex-center flex-column flex-column-fluid pb-lg-20">
+<div class="d-flex flex-center flex-column flex-column-fluid">
   <EditForm class="form w-100" novalidate="novalidate"
             FormName="signup" EditContext="@_editContext"
             OnValidSubmit="@HandleValidSubmit">
@@ -40,10 +40,17 @@
       <ValidationMessage For="@(() => Model.Email)" class="invalid-feedback" />
     </div>
 
-    <div class="mt-8">
-      <InputText class="@($"form-control bg-transparent {GetInvalidClass(nameof(Model.DisplayName))}")"
-                 @bind-Value="@Model.DisplayName" placeholder="Display Name" type="text" />
-      <ValidationMessage For="@(() => Model.DisplayName)" class="invalid-feedback" />
+    <div class="mt-8 row gx-3">
+      <div class="col-md-6">
+        <InputText class="@($"form-control bg-transparent {GetInvalidClass(nameof(Model.FirstName))}")"
+                   @bind-Value="@Model.FirstName" placeholder="First Name" type="text" />
+        <ValidationMessage For="@(() => Model.FirstName)" class="invalid-feedback" />
+      </div>
+      <div class="col-md-6">
+        <InputText class="@($"form-control bg-transparent {GetInvalidClass(nameof(Model.LastName))}")"
+                   @bind-Value="@Model.LastName" placeholder="Last Name" type="text" />
+        <ValidationMessage For="@(() => Model.LastName)" class="invalid-feedback" />
+      </div>
     </div>
 
     <div class="mt-8">
@@ -79,3 +86,5 @@
     </div>
   </EditForm>
 </div>
+
+<SweetAlertModal Options="@_sweetAlertOptions" />

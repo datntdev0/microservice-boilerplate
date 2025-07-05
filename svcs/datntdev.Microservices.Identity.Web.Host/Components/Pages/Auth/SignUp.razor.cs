@@ -1,21 +1,26 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using datntdev.Microservices.Identity.Application.Authorization.Users;
+using datntdev.Microservices.Identity.Web.Host.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
 {
     public partial class SignUp
     {
+        private readonly SweetAlertModel _sweetAlertOptions = new();
+        
         private EditContext _editContext = default!;
 
         [Inject]    
         private NavigationManager NavigationManager { get; set; } = default!;
 
+        [Inject]
+        private UserManager<AppUserEntity> UserManager { get; set; } = default!;
+
         [SupplyParameterFromForm]
         private InputModel Model { get; set; } = new();
-
-        [SupplyParameterFromQuery]
-        private string ReturnUrl { get; set; } = string.Empty;
 
         protected override void OnInitialized()
         {
@@ -29,10 +34,27 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
             return _editContext.IsValid(fieldIdentifier) ? string.Empty : "is-invalid";
         }
 
-        private void HandleValidSubmit()
+        private async Task HandleValidSubmit()
         {
-            // Simulate successful sign-up
-            NavigationManager.NavigateTo(ReturnUrl, true);
+            var newUser = new AppUserEntity
+            {
+                UserName = Model.Email,
+                Email = Model.Email,
+                FirstName = Model.FirstName,
+                LastName = Model.LastName,
+            };
+            var result = await UserManager.CreateAsync(newUser, Model.Password!);
+
+            if (result.Succeeded)
+            {
+                NavigationManager.NavigateTo("/auth/signin", forceLoad: true);
+            }
+            else
+            {
+                _sweetAlertOptions.Title = "Sign Up Failed";
+                _sweetAlertOptions.Text = string.Join(", ", result.Errors.Select(e => e.Description));
+                _sweetAlertOptions.Icon = "error";
+            }
         }
 
         public class InputModel
@@ -44,7 +66,11 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
 
             [Required]
             [DataType(DataType.Text)]
-            public string? DisplayName { get; set; }
+            public string? FirstName { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            public string? LastName { get; set; }
 
             [Required]
             [DataType(DataType.Password)]

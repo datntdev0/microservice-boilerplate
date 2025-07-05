@@ -1,6 +1,8 @@
-﻿using datntdev.Microservices.Identity.Web.Host.Models;
+﻿using datntdev.Microservices.Identity.Application.Authorization.Users;
+using datntdev.Microservices.Identity.Web.Host.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
@@ -14,12 +16,14 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
         [Inject]
         private NavigationManager NavigationManager { get; set; } = default!;
 
+        [Inject]
+        private SignInManager<AppUserEntity> SignInManager { get; set; } = default!;
+
         [SupplyParameterFromForm]
         private InputModel Model { get; set; } = new();
 
         [SupplyParameterFromQuery]
         private string ReturnUrl { get; set; } = string.Empty;
-
 
         protected override void OnInitialized()
         {
@@ -33,20 +37,19 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
             return _editContext.IsValid(fieldIdentifier) ? string.Empty : "is-invalid";
         }
 
-        private void HandleValidSubmit()
+        private async Task HandleValidSubmitAsync()
         {
-            const string defaultEmail = "admin@datntdev.com";
-            const string defaultPassword = "12345678";
+            var result = await SignInManager.PasswordSignInAsync(
+                Model.Email!, Model.Password!, isPersistent: false, lockoutOnFailure: false);
 
-            // Simulate successful sign-in
-            if (Model.Email == defaultEmail && Model.Password == defaultPassword)
+            if (result.Succeeded)
             {
-                NavigationManager.NavigateTo(ReturnUrl, true);
+                NavigationManager.NavigateTo(ReturnUrl, forceLoad: true);
             }
             else
             {
-                _sweetAlertOptions.Title = "Sign in failure";
-                _sweetAlertOptions.Text = "Invalid email or password. Please try again.";
+                _sweetAlertOptions.Title = "Sign In Failed";
+                _sweetAlertOptions.Text = "Invalid login attempt. Please try again.";
                 _sweetAlertOptions.Icon = "error";
             }
         }

@@ -23,36 +23,27 @@ namespace datntdev.Microservices.Migrator.Seeders
             var openIddictClientSecret = openIddictConfiguration.GetValue<string>("ClientSecret");
             var openIddictRedirectUris = openIddictConfiguration.GetValue<string>("RedirectUris");
 
-            if (string.IsNullOrEmpty(openIddictClientId)) return;
+            ArgumentNullException.ThrowIfNull(openIddictClientId, nameof(openIddictClientId));
+            ArgumentNullException.ThrowIfNull(openIddictClientSecret, nameof(openIddictClientSecret));
 
             var manager = services.GetRequiredService<IOpenIddictApplicationManager>();
 
-            // TODO: To make it simple, we delete the existing application if it exists.
-            var application = await manager.FindByClientIdAsync(openIddictClientId, cancellationToken);
-            if (application != null) await manager.DeleteAsync(application, cancellationToken);
-
             // Create a new OpenIddict application with the specified client ID.
             // The application type is set to Web, and the client type is set to Public.
-            var newApplication = new OpenIddictApplicationDescriptor
-            {
-                DisplayName = $"{openIddictClientId}.Client",
-                ClientId = $"{openIddictClientId}.Client",
-                ClientType = OpenIddictConstants.ClientTypes.Public, 
-                ApplicationType = OpenIddictConstants.ApplicationTypes.Web,
-                Permissions =
-                {
-                    OpenIddictConstants.Permissions.Endpoints.Authorization,
-                    OpenIddictConstants.Permissions.Endpoints.Token,
+            // TODO: To make it simple, we delete the existing application if it exists.
+            var newApplication = CreatePublicApplication(
+                openIddictClientId, openIddictRedirectUris);
 
-                    OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+            var application = await manager.FindByClientIdAsync(newApplication.ClientId!, cancellationToken);
+            if (application != null) await manager.DeleteAsync(application, cancellationToken);
+            await manager.CreateAsync(newApplication, cancellationToken);
 
-                    OpenIddictConstants.Permissions.ResponseTypes.Code,
-                }
-            };
+            // Create a new OpenIddict application for the confidential client.
+            newApplication = CreateConfidentialApplication(
+                openIddictClientId, openIddictClientSecret, openIddictRedirectUris);
 
-            openIddictRedirectUris?.Split(",").Select(x => new Uri(x))
-                .ToList().ForEach(x => newApplication.RedirectUris.Add(x));
-
+            application = await manager.FindByClientIdAsync(newApplication.ClientId!, cancellationToken);
+            if (application != null) await manager.DeleteAsync(application, cancellationToken);
             await manager.CreateAsync(newApplication, cancellationToken);
         }
 
@@ -73,6 +64,51 @@ namespace datntdev.Microservices.Migrator.Seeders
                 };
                 await userManager.CreateAsync(adminUser, "123Qwe!@#");
             }
+        }
+
+        private static OpenIddictApplicationDescriptor CreatePublicApplication(
+            string clientId, string? redirectUris)
+        {
+            var application = new OpenIddictApplicationDescriptor
+            {
+                DisplayName = $"{clientId}.Public",
+                ClientId = $"{clientId}.Public",
+                ClientType = OpenIddictConstants.ClientTypes.Public,
+                ApplicationType = OpenIddictConstants.ApplicationTypes.Web,
+                Permissions =
+                {
+                    OpenIddictConstants.Permissions.Endpoints.Token,
+                    OpenIddictConstants.Permissions.Endpoints.Authorization,
+                    OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                    OpenIddictConstants.Permissions.ResponseTypes.Code,
+                }
+            };
+
+            redirectUris?.Split(",").Select(x => new Uri(x))
+                .ToList().ForEach(x => application.RedirectUris.Add(x));
+
+            return application;
+        }
+
+        private static OpenIddictApplicationDescriptor CreateConfidentialApplication(
+            string clientId, string clientSecret, string? redirectUris)
+        {
+            var application = new OpenIddictApplicationDescriptor
+            {
+                DisplayName = $"{clientId}.Confidential",
+                ClientId = $"{clientId}.Confidential",
+                ClientSecret = clientSecret,
+                ClientType = OpenIddictConstants.ClientTypes.Confidential,
+                ApplicationType = OpenIddictConstants.ApplicationTypes.Web,
+                Permissions =
+                {
+                    OpenIddictConstants.Permissions.Endpoints.Token,
+                    OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
+                }
+            };
+            redirectUris?.Split(",").Select(x => new Uri(x))
+                .ToList().ForEach(x => application.RedirectUris.Add(x));
+            return application;
         }
     }
 }

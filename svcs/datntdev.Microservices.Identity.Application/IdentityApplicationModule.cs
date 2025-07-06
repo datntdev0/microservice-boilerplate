@@ -47,8 +47,12 @@ namespace datntdev.Microservices.Identity.Application
                         .AddEphemeralEncryptionKey()
                         .AddEphemeralSigningKey();
 
-                    options.RequireProofKeyForCodeExchange()
+                    options
+                        .RequireProofKeyForCodeExchange()
                         .AllowAuthorizationCodeFlow()
+                        .AllowClientCredentialsFlow();
+
+                    options
                         .SetTokenEndpointUris("/connect/token")
                         .SetAuthorizationEndpointUris("/connect/authorize");
 

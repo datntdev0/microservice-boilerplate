@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using System.Security.Claims;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace datntdev.Microservices.Identity.Web.Host.Controllers
 {
@@ -12,7 +13,7 @@ namespace datntdev.Microservices.Identity.Web.Host.Controllers
     public class AuthorizationController : ControllerBase
     {
         [HttpGet("~/connect/authorize")]
-        [HttpPost("~/connection/authorize")]
+        [HttpPost("~/connect/authorize")]
         public async Task<IActionResult> AuthorizeAsync()
         {
             var request = HttpContext.GetOpenIddictServerRequest() ??
@@ -33,21 +34,17 @@ namespace datntdev.Microservices.Identity.Web.Host.Controllers
                     });
             }
 
-            // Create a new claims principal
-            var claims = new List<Claim>
-            {
-                // 'subject' claim which is required
-                new (OpenIddictConstants.Claims.Subject, result.Principal.Identity.Name),
-            };
-
-            var claimsIdentity = new ClaimsIdentity(claims, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            var authenticationScheme = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme;
+            var subjectClaim = new Claim(Claims.Subject, result.Principal.Identity!.Name!);
+            var claims = result.Principal.Claims.Append(subjectClaim);
+            var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationScheme));
 
             // Set requested scopes (this is not done automatically)
             claimsPrincipal.SetScopes(request.GetScopes());
 
-            // Signing in with the OpenIddict authentiction scheme trigger OpenIddict to issue a code (which can be exchanged for an access token)
-            return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+            // Signing in with the OpenIddict authentiction scheme trigger
+            // OpenIddict to issue a code (which can be exchanged for an access token)
+            return SignIn(claimsPrincipal, authenticationScheme);
         }
 
         [HttpPost("~/connect/token")]
@@ -56,13 +53,19 @@ namespace datntdev.Microservices.Identity.Web.Host.Controllers
             var request = HttpContext.GetOpenIddictServerRequest() ??
                 throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
 
+            var authenticationScheme = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme;
             ClaimsPrincipal claimsPrincipal;
 
             if (request.IsAuthorizationCodeGrantType())
             {
                 // Retrieve the claims principal stored in the authorization code
-                claimsPrincipal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal ??
+                claimsPrincipal = (await HttpContext.AuthenticateAsync(authenticationScheme)).Principal ??
                     throw new InvalidOperationException("Can't retrieve the claims principal stored in the authorization code");
+            }
+            else if (request.IsClientCredentialsGrantType())
+            {
+                var claims = new Claim[] { new(Claims.Subject, "Service Principal") };
+                claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationScheme));
             }
             else
             {
@@ -70,7 +73,7 @@ namespace datntdev.Microservices.Identity.Web.Host.Controllers
             }
 
             // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
-            return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+            return SignIn(claimsPrincipal, authenticationScheme);
         }
     }
 }

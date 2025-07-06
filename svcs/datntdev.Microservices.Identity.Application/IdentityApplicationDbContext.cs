@@ -3,9 +3,9 @@ using datntdev.Microservices.Identity.Application.Authorization.Users;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace datntdev.Microservices.Identity.Application.Repositories.Data
+namespace datntdev.Microservices.Identity.Application
 {
-    internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public class IdentityApplicationDbContext(DbContextOptions<IdentityApplicationDbContext> options)
         : IdentityDbContext<AppUserEntity, AppRoleEntity, long>(options)
     {
     }

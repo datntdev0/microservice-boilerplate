@@ -5,7 +5,7 @@ using datntdev.Microservices.ServiceDefaults.Hosting;
 
 ServiceBootstrapBuilder.CreateWebApplication<Startup>(args).Run();
 
-internal class Startup(IWebHostEnvironment env) : ServiceStartup(env)
+internal class Startup(IWebHostEnvironment env) : WebServiceStartup(env)
 {
     public override void ConfigureServices(IServiceCollection services)
     {

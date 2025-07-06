@@ -1,22 +1,20 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
 namespace datntdev.Microservices.ServiceDefaults.Hosting
 {
     public static class ServiceBootstrapBuilder
     {
-        public static IHost CreateDefaultHost<TStartup>(string[] args) where TStartup : ServiceStartup
+        public static IHost CreateHostApplication<TStartup>(string[] args) where TStartup : AppServiceStartup
         {
-            return Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<TStartup>();
-                })
-                .Build();
+            var builder = Host.CreateApplicationBuilder(args);
+            var startup = Activator.CreateInstance(typeof(TStartup), builder.Environment);
+            ((TStartup)startup!).ConfigureServices(builder.Services);
+            var app = builder.Build();
+            return app;
         }
 
-        public static IHost CreateWebApplication<TStartup>(string[] args) where TStartup : ServiceStartup
+        public static IHost CreateWebApplication<TStartup>(string[] args) where TStartup : WebServiceStartup
         {
             var builder = WebApplication.CreateBuilder(args);
             var startup = Activator.CreateInstance(typeof(TStartup), builder.Environment);

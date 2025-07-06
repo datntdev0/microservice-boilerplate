@@ -17,6 +17,7 @@ namespace datntdev.Microservices.ServiceDefaults.Hosting
         public static IServiceCollection AddServiceBootstrap<TStartupModule>(this IServiceCollection services, IConfigurationRoot configs) 
             where TStartupModule : BaseModule
         {
+            services.AddSingleton(configs);
             var bootstrapper = new ServiceBootstrap<TStartupModule>();
             bootstrapper.ConfigureServices(services, configs);
             return services.AddSingleton(bootstrapper);

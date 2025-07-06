@@ -10,7 +10,7 @@ namespace datntdev.Microservices.Common.Configuration
     {
         private static readonly ConcurrentDictionary<string, IConfigurationRoot> _configurationCache = new();
 
-        public static IConfigurationRoot Get(IWebHostEnvironment env)
+        public static IConfigurationRoot Get(IHostEnvironment env)
         {
             var path = env.ContentRootPath;
             var envName = env.EnvironmentName;

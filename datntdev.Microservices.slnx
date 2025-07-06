@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/apps/" Id="7c63bae4-df19-4ce5-95db-24106adc3ff3">
     <Project Path="apps/datntdev.Microservices.AppHost/datntdev.Microservices.AppHost.csproj" Id="40a288d0-50a1-4038-9648-9955c553e967" />
+    <Project Path="apps/datntdev.Microservices.Migrator/datntdev.Microservices.Migrator.csproj" Id="71cf13b5-cf1d-4f55-a0a9-adf47c7e5372" />
   </Folder>
   <Folder Name="/libs/" Id="01284de2-5dae-483f-b32a-197ff0eb16db">
     <Project Path="libs/datntdev.Microservices.Common/datntdev.Microservices.Common.csproj" Id="ce408e6b-d4c7-4525-a289-2a086feaa702" />

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace datntdev.Microservices.Identity.Application.Authorization.Users
 {
-    internal class AppUserEntity : IdentityUser<long>, IAuditEntity
+    public class AppUserEntity : IdentityUser<long>, IAuditEntity
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }

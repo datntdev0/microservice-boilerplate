@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace datntdev.Microservices.Identity.Application
 {
@@ -16,7 +17,7 @@ namespace datntdev.Microservices.Identity.Application
         {
             services.AddDbContext<IdentityApplicationDbContext>(o => o.UseOpenIddict());
             services.AddIdentityServices();
-            services.AddOpenIddictServices();
+            services.AddOpenIddictServices(configs);
         }
     }
 
@@ -31,8 +32,11 @@ namespace datntdev.Microservices.Identity.Application
             return services;
         }
 
-        public static IServiceCollection AddOpenIddictServices(this IServiceCollection services)
+        public static IServiceCollection AddOpenIddictServices(
+            this IServiceCollection services, IConfigurationRoot configs)
         {
+            var encryptionKey = Convert.FromBase64String(configs["OpenIddict:EncryptionKey"]!);
+
             services.AddOpenIddict()
                 .AddCore(options =>
                 {
@@ -44,8 +48,8 @@ namespace datntdev.Microservices.Identity.Application
                     // TODO: Disable access token encryption for debug
                     // edit this code for applying multi higher environments
                     options.DisableAccessTokenEncryption()
-                        .AddEphemeralEncryptionKey()
-                        .AddEphemeralSigningKey();
+                        .AddEphemeralSigningKey()
+                        .AddEncryptionKey(new SymmetricSecurityKey(encryptionKey));
 
                     options
                         .RequireProofKeyForCodeExchange()

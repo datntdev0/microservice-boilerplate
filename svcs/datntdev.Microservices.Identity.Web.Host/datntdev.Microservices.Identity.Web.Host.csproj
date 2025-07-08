@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<Import Project="..\..\common.props" />
+
+	<PropertyGroup>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\libs\datntdev.Microservices.ServiceDefaults\datntdev.Microservices.ServiceDefaults.csproj" />
+		<ProjectReference Include="..\datntdev.Microservices.Identity.Application\datntdev.Microservices.Identity.Application.csproj" />
+	</ItemGroup>
+
+</Project>

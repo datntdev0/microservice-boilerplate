@@ -1,0 +1,15 @@
+﻿
+@if (!string.IsNullOrEmpty(Options?.Title))
+{
+  <script>
+    Swal.fire({
+      title: '@Options?.Title',
+      text: '@Options?.Text',
+      icon: '@Options?.Icon',
+    })
+  </script>
+}
+
+@code {
+  [Parameter] public SweetAlertModel? Options { get; set; }
+}

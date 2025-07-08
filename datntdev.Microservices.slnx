@@ -1,12 +1,20 @@
 <Solution>
   <Folder Name="/apps/" Id="7c63bae4-df19-4ce5-95db-24106adc3ff3">
     <Project Path="apps/datntdev.Microservices.AppHost/datntdev.Microservices.AppHost.csproj" Id="40a288d0-50a1-4038-9648-9955c553e967" />
+    <Project Path="apps/datntdev.Microservices.Migrator/datntdev.Microservices.Migrator.csproj" Id="71cf13b5-cf1d-4f55-a0a9-adf47c7e5372" />
   </Folder>
-  <Folder Name="/libs/" Id="01284de2-5dae-483f-b32a-197ff0eb16db">
+  <Folder Name="/libraries/" Id="01284de2-5dae-483f-b32a-197ff0eb16db">
+    <Project Path="libs/datntdev.Microservices.Common/datntdev.Microservices.Common.csproj" Id="ce408e6b-d4c7-4525-a289-2a086feaa702" />
     <Project Path="libs/datntdev.Microservices.ServiceDefaults/datntdev.Microservices.ServiceDefaults.csproj" />
   </Folder>
-  <Folder Name="/services/" Id="02ea681e-c7d8-13c7-8484-4ac65e1b71e8">
-    <Project Path="svcs/datntdev.Microservice.Identity.Web.Host/datntdev.Microservice.Identity.Web.Host.csproj" />
+  <Folder Name="/services/" Id="02ea681e-c7d8-13c7-8484-4ac65e1b71e8" />
+  <Folder Name="/services/admin/">
+    <Project Path="svcs/datntdev.Microservices.Admin.Web.Host/datntdev.Microservices.Admin.Web.Host.csproj" />
+  </Folder>
+  <Folder Name="/services/identity/">
+    <Project Path="svcs/datntdev.Microservices.Identity.Application/datntdev.Microservices.Identity.Application.csproj" Id="271de2cf-51c3-4c41-b9b9-bfd8ce081b63" />
+    <Project Path="svcs/datntdev.Microservices.Identity.Contracts/datntdev.Microservices.Identity.Contracts.csproj" Id="dc885018-637d-4009-876f-f66fd446b2a0" />
+    <Project Path="svcs/datntdev.Microservices.Identity.Web.Host/datntdev.Microservices.Identity.Web.Host.csproj" />
   </Folder>
   <Folder Name="/_/" Id="8ec462fd-d22e-90a8-e5ce-7e832ba40c5d">
     <File Path="common.props" />

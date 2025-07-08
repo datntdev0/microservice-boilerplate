@@ -10,13 +10,13 @@ namespace datntdev.Microservices.Identity.Web.Host
         public override void ConfigureServices(IServiceCollection services, IConfigurationRoot configs)
         {
             // Register Entity Framework Core with OpenIddict support
-            ConfigureqDbContextSqlServer(services, configs);
+            ConfigureDbContextSqlServer(services, configs);
 
             // Register Application services
             services.AddScoped<Services.AppSettingService>();
         }
 
-        private static void ConfigureqDbContextSqlServer(IServiceCollection services, IConfigurationRoot configs)
+        private static void ConfigureDbContextSqlServer(IServiceCollection services, IConfigurationRoot configs)
         {
             var connectionString = configs.GetConnectionString("DefaultConnection");
             services.ConfigureDbContext<IdentityApplicationDbContext>(

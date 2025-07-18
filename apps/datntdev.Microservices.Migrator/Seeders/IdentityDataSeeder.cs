@@ -1,5 +1,7 @@
 ﻿using datntdev.Microservices.Identity.Application.Authorization.Users;
+using datntdev.Microservices.Identity.Application.Authorization.Users.Models;
 using datntdev.Microservices.Identity.Application.MultiTenancy;
+using datntdev.Microservices.Identity.Application.MultiTenancy.Models;
 using datntdev.Microservices.Identity.Contracts;
 using datntdev.Microservices.ServiceDefaults.Session;
 using Microsoft.Extensions.Configuration;
@@ -15,24 +17,43 @@ namespace datntdev.Microservices.Migrator.Seeders
         public async Task SeedDataAsync(CancellationToken cancellationToken)
         {
             services.GetRequiredService<AppSessionContext>()
-                .SetTenantInfo(AppSessionTenancyInfo.HostTenant);
+                .SetTenantInfo(new() { TenantId = Common.Constants.Tenancy.HostTenantId });
 
             await EnsureOpenIddictApplicationExistsAsync(cancellationToken);
+            await EnsureDefaultAdminUserExistsAsync(cancellationToken);
             await EnsureDefaultTenantExistsAsync(cancellationToken);
+        }
+
+        private async Task EnsureDefaultAdminUserExistsAsync(CancellationToken cancellationToken)
+        {
+            var userManager = services.GetRequiredService<UserManager>();
+            var adminUser = await userManager.FindAsync(Constants.AdminUsername, cancellationToken);
+            if (adminUser == null)
+            {
+                adminUser = new AppUserEntity
+                {
+                    Username = Constants.AdminUsername,
+                    EmailAddress = Constants.AdminUsername,
+                };
+                await userManager.CreateAsync(adminUser, Constants.AdminPassword, cancellationToken);
+            }
         }
 
         private async Task EnsureDefaultTenantExistsAsync(CancellationToken cancellationToken)
         {
             var tenantManager = services.GetRequiredService<AppTenantManager>();
+            var userManager = services.GetRequiredService<UserManager>();
 
             // Check if the default tenant exists, if not, create it.
-            var tenant = await tenantManager.GetAppTenantAsync(Constants.HostTenantId);
+            var tenant = await tenantManager.GetAppTenantAsync(Common.Constants.Tenancy.HostTenantId);
             if (tenant == null)
             {
+                var adminUser = await userManager.FindAsync(Constants.AdminUsername, cancellationToken);
                 tenant = new AppTenantEntity
                 {
-                    Name = Constants.HostTenantName,
+                    Name = "Default Tenant for Host",
                     Description = "Default Tenant for Host",
+                    Users = [adminUser!]
                 };
                 await tenantManager.CreateAsync(tenant, cancellationToken);
             }

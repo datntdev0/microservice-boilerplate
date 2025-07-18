@@ -1,4 +1,5 @@
 ﻿using datntdev.Microservices.Common.Modular;
+using datntdev.Microservices.Identity.Application.Authorization.Users;
 using datntdev.Microservices.Identity.Contracts;
 using datntdev.Microservices.ServiceDefaults;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace datntdev.Microservices.Identity.Application
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services)
         {
+            services.AddScoped<UserManager>();
             return services;
         }
 

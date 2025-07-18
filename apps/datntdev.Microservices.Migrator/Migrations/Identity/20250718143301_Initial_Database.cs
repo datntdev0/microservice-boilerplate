@@ -24,11 +24,35 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AppTenants", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppUsers",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    EmailAddress = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,6 +98,32 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OpenIddictScopes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppTenantUsers",
+                columns: table => new
+                {
+                    TenantId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppTenantUsers", x => new { x.TenantId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_AppTenantUsers_AppTenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "AppTenants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AppTenantUsers_AppUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -134,6 +184,28 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppTenantUsers_UserId",
+                table: "AppTenantUsers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppUsers_EmailAddress",
+                table: "AppUsers",
+                column: "EmailAddress",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppUsers_PasswordHash",
+                table: "AppUsers",
+                column: "PasswordHash");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppUsers_Username",
+                table: "AppUsers",
+                column: "Username",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OpenIddictApplications_ClientId",
                 table: "OpenIddictApplications",
                 column: "ClientId",
@@ -174,13 +246,19 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AppTenants");
+                name: "AppTenantUsers");
 
             migrationBuilder.DropTable(
                 name: "OpenIddictScopes");
 
             migrationBuilder.DropTable(
                 name: "OpenIddictTokens");
+
+            migrationBuilder.DropTable(
+                name: "AppTenants");
+
+            migrationBuilder.DropTable(
+                name: "AppUsers");
 
             migrationBuilder.DropTable(
                 name: "OpenIddictAuthorizations");

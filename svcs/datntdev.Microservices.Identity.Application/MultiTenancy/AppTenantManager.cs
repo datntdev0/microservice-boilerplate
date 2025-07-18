@@ -1,4 +1,5 @@
 ﻿using datntdev.Microservices.Common.Registars;
+using datntdev.Microservices.Identity.Application.MultiTenancy.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace datntdev.Microservices.Identity.Application.MultiTenancy

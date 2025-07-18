@@ -1,4 +1,5 @@
-﻿using datntdev.Microservices.Common.Registars;
+﻿using datntdev.Microservices.Common;
+using datntdev.Microservices.Common.Registars;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace datntdev.Microservices.ServiceDefaults.Session
@@ -12,7 +13,7 @@ namespace datntdev.Microservices.ServiceDefaults.Session
 
         public int? TenantId => TenantInfo?.TenantId;
 
-        public bool IsHostTenant => TenantInfo?.TenantId == AppSessionTenancyInfo.HostTenant.TenantId;
+        public bool IsHostTenant => TenantInfo?.TenantId == Constants.Tenancy.HostTenantId;
 
         public void SetTenantInfo(AppSessionTenancyInfo? tenantInfo)
         {

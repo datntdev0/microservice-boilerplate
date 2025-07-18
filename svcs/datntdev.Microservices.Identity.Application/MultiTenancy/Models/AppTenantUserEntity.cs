@@ -1,6 +1,6 @@
 ﻿using datntdev.Microservices.Common.Models;
 
-namespace datntdev.Microservices.Identity.Application.MultiTenancy
+namespace datntdev.Microservices.Identity.Application.MultiTenancy.Models
 {
     public class AppTenantUserEntity : IAuditCreatedEntity
     {

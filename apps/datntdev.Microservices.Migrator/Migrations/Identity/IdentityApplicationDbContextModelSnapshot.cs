@@ -22,6 +22,27 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("AppTenantUsers", b =>
+                {
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TenantId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AppTenantUsers");
+                });
+
             modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreApplication", b =>
                 {
                     b.Property<string>("Id")
@@ -233,13 +254,77 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                     b.ToTable("OpenIddictTokens", (string)null);
                 });
 
-            modelBuilder.Entity("datntdev.Microservices.Identity.Application.MultiTenancy.AppTenantEntity", b =>
+            modelBuilder.Entity("datntdev.Microservices.Identity.Application.Authorization.Users.Models.AppUserEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmailAddress")
+                        .IsUnique();
+
+                    b.HasIndex("PasswordHash");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.ToTable("AppUsers");
+                });
+
+            modelBuilder.Entity("datntdev.Microservices.Identity.Application.MultiTenancy.Models.AppTenantEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -270,6 +355,21 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                     b.HasKey("Id");
 
                     b.ToTable("AppTenants");
+                });
+
+            modelBuilder.Entity("AppTenantUsers", b =>
+                {
+                    b.HasOne("datntdev.Microservices.Identity.Application.MultiTenancy.Models.AppTenantEntity", null)
+                        .WithMany("TenantUsers")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("datntdev.Microservices.Identity.Application.Authorization.Users.Models.AppUserEntity", null)
+                        .WithMany("TenantUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreAuthorization", b =>
@@ -306,6 +406,16 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
             modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreAuthorization", b =>
                 {
                     b.Navigation("Tokens");
+                });
+
+            modelBuilder.Entity("datntdev.Microservices.Identity.Application.Authorization.Users.Models.AppUserEntity", b =>
+                {
+                    b.Navigation("TenantUsers");
+                });
+
+            modelBuilder.Entity("datntdev.Microservices.Identity.Application.MultiTenancy.Models.AppTenantEntity", b =>
+                {
+                    b.Navigation("TenantUsers");
                 });
 #pragma warning restore 612, 618
         }

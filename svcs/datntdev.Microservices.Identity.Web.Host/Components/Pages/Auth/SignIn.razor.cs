@@ -40,7 +40,7 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
 
         private async Task HandleValidSubmitAsync()
         {
-            if (Model.Password == Constants.DefaultUserPassword)
+            if (Model.Password == Constants.AdminPassword)
             {
                 var claims = new Claim[] { new(ClaimTypes.Name, Model.Email!) };
                 var claimsIdentity = new ClaimsIdentity(claims, Constants.AuthenticationScheme);

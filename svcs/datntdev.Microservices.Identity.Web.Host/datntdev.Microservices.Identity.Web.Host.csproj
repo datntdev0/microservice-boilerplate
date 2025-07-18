@@ -11,7 +11,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\libs\datntdev.Microservices.ServiceDefaults\datntdev.Microservices.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\datntdev.Microservices.Identity.Application\datntdev.Microservices.Identity.Application.csproj" />
 	</ItemGroup>
 

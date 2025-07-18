@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore;
+﻿using datntdev.Microservices.Identity.Contracts;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
@@ -12,8 +12,8 @@ namespace datntdev.Microservices.Identity.Web.Host.Controllers
     [ApiController]
     public class AuthorizationController : ControllerBase
     {
-        [HttpGet("~/connect/authorize")]
-        [HttpPost("~/connect/authorize")]
+        [HttpGet(Constants.OAuthAuthEndpoint)]
+        [HttpPost(Constants.OAuthAuthEndpoint)]
         public async Task<IActionResult> AuthorizeAsync()
         {
             var request = HttpContext.GetOpenIddictServerRequest() ??
@@ -23,16 +23,7 @@ namespace datntdev.Microservices.Identity.Web.Host.Controllers
             var result = await HttpContext.AuthenticateAsync();
 
             // If the user principal can't be extracted, redirect the user to the login page.
-            if (!result.Succeeded)
-            {
-                return Challenge(
-                    authenticationSchemes: CookieAuthenticationDefaults.AuthenticationScheme,
-                    properties: new AuthenticationProperties
-                    {
-                        RedirectUri = Request.PathBase + Request.Path + QueryString.Create(
-                            Request.HasFormContentType ? Request.Form.ToList() : Request.Query.ToList())
-                    });
-            }
+            if (!result.Succeeded) return Challenge();
 
             var authenticationScheme = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme;
             var subjectClaim = new Claim(Claims.Subject, result.Principal.Identity!.Name!);
@@ -47,7 +38,7 @@ namespace datntdev.Microservices.Identity.Web.Host.Controllers
             return SignIn(claimsPrincipal, authenticationScheme);
         }
 
-        [HttpPost("~/connect/token")]
+        [HttpPost(Constants.OAuthTokenEndpoint)]
         public async Task<IActionResult> TokenAsync()
         {
             var request = HttpContext.GetOpenIddictServerRequest() ??

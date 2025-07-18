@@ -1,8 +1,6 @@
-﻿using datntdev.Microservices.Identity.Application.Authorization.Users;
-using datntdev.Microservices.Identity.Web.Host.Models;
+﻿using datntdev.Microservices.Identity.Web.Host.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
@@ -12,12 +10,6 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
         private readonly SweetAlertModel _sweetAlertOptions = new();
         
         private EditContext _editContext = default!;
-
-        [Inject]    
-        private NavigationManager NavigationManager { get; set; } = default!;
-
-        [Inject]
-        private UserManager<AppUserEntity> UserManager { get; set; } = default!;
 
         [SupplyParameterFromForm]
         private InputModel Model { get; set; } = new();
@@ -34,27 +26,9 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
             return _editContext.IsValid(fieldIdentifier) ? string.Empty : "is-invalid";
         }
 
-        private async Task HandleValidSubmit()
+        private Task HandleValidSubmit()
         {
-            var newUser = new AppUserEntity
-            {
-                UserName = Model.Email,
-                Email = Model.Email,
-                FirstName = Model.FirstName,
-                LastName = Model.LastName,
-            };
-            var result = await UserManager.CreateAsync(newUser, Model.Password!);
-
-            if (result.Succeeded)
-            {
-                NavigationManager.NavigateTo("/auth/signin", forceLoad: true);
-            }
-            else
-            {
-                _sweetAlertOptions.Title = "Sign Up Failed";
-                _sweetAlertOptions.Text = string.Join(", ", result.Errors.Select(e => e.Description));
-                _sweetAlertOptions.Icon = "error";
-            }
+            throw new NotImplementedException("HandleValidSubmit method is not implemented yet.");
         }
 
         public class InputModel

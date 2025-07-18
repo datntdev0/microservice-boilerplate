@@ -1,4 +1,5 @@
 ﻿using datntdev.Microservices.Common.Models;
+using datntdev.Microservices.Identity.Application.MultiTenancy;
 using Microsoft.AspNetCore.Identity;
 
 namespace datntdev.Microservices.Identity.Application.Authorization.Users
@@ -13,5 +14,8 @@ namespace datntdev.Microservices.Identity.Application.Authorization.Users
         public string? CreatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string? UpdatedBy { get; set; }
+
+        public List<AppTenantEntity> Tenants { get; set; } = [];
+        public List<AppTenantUserEntity> TenantUsers { get; set; } = [];
     }
 }

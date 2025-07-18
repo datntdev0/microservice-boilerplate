@@ -1,9 +1,10 @@
-﻿using datntdev.Microservices.Identity.Application.Authorization.Users;
+﻿using datntdev.Microservices.Identity.Contracts;
 using datntdev.Microservices.Identity.Web.Host.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
 {
@@ -16,8 +17,8 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
         [Inject]
         private NavigationManager NavigationManager { get; set; } = default!;
 
-        [Inject]
-        private SignInManager<AppUserEntity> SignInManager { get; set; } = default!;
+        [CascadingParameter]
+        private HttpContext HttpContext { get; set; } = default!;
 
         [SupplyParameterFromForm]
         private InputModel Model { get; set; } = new();
@@ -39,11 +40,11 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
 
         private async Task HandleValidSubmitAsync()
         {
-            var result = await SignInManager.PasswordSignInAsync(
-                Model.Email!, Model.Password!, isPersistent: false, lockoutOnFailure: false);
-
-            if (result.Succeeded)
+            if (Model.Password == Constants.DefaultUserPassword)
             {
+                var claims = new Claim[] { new(ClaimTypes.Name, Model.Email!) };
+                var claimsIdentity = new ClaimsIdentity(claims, Constants.AuthenticationScheme);
+                await HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity));
                 NavigationManager.NavigateTo(ReturnUrl, forceLoad: true);
             }
             else

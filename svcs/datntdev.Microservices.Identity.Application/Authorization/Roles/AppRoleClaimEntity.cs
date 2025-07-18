@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace datntdev.Microservices.Identity.Application.Authorization.Roles
 {
-    public class AppRoleEntity : IdentityRole<long>, ITenancyEntity
+    public class AppRoleClaimEntity : IdentityRoleClaim<long>, ITenancyEntity
     {
         public int? TenantId { get; set; }
-        public string? Description { get; set; }
     }
 }

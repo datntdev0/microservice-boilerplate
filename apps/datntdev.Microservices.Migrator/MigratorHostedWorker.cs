@@ -25,7 +25,8 @@ namespace datntdev.Microservices.Migrator
 
                 logger.LogInformation("Checking database existed or pending migrations...");
                 var dbContext = scoped.GetRequiredService<IdentityApplicationDbContext>();
-                dbContext.Database.Migrate();
+                var pendingChanges = dbContext.Database.GetPendingMigrations();
+                if (pendingChanges.Any()) dbContext.Database.Migrate();
 
                 logger.LogInformation("Seeding initial data...");
                 await Parallel.ForEachAsync(GetDataSeeders(scoped), cancellationToken, async (seeder, ct) =>

@@ -1,3 +1,4 @@
+using datntdev.Microservices.Identity.Contracts;
 using datntdev.Microservices.Identity.Web.Host;
 using datntdev.Microservices.Identity.Web.Host.Components;
 using datntdev.Microservices.Identity.Web.Host.Middlewares;
@@ -19,8 +20,6 @@ internal class Startup(IWebHostEnvironment env) : WebServiceStartup(env)
 
         // Add Authentication and Authorization services
         services.AddCascadingAuthenticationState();
-        services.AddAuthentication().AddCookie(x => x.LoginPath = "/auth/signin");
-        services.AddAuthorization().AddAuthorizationCore();
 
         // Add Middlewares as Transient Instances
         services.AddTransient<AppSettingCookieMiddleware>();

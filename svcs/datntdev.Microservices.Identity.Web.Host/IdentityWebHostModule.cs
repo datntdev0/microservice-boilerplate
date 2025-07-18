@@ -13,9 +13,6 @@ namespace datntdev.Microservices.Identity.Web.Host
             // Register Entity Framework Core with OpenIddict support
             ConfigureDbContextSqlServer(services, configs);
             ConfigureAuthentication(services, configs);
-
-            // Register Application services
-            services.AddScoped<Services.AppSettingService>();
         }
 
         private static void ConfigureDbContextSqlServer(IServiceCollection services, IConfigurationRoot configs)

@@ -1,10 +1,9 @@
-﻿using datntdev.Microservices.Identity.Contracts;
+﻿using datntdev.Microservices.Identity.Application.Identity;
+using datntdev.Microservices.Identity.Application.Identity.Models;
 using datntdev.Microservices.Identity.Web.Host.Models;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 
 namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
 {
@@ -16,6 +15,9 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
 
         [Inject]
         private NavigationManager NavigationManager { get; set; } = default!;
+
+        [Inject]
+        private IdentityManager IdentityManager { get; set; } = default!;
 
         [CascadingParameter]
         private HttpContext HttpContext { get; set; } = default!;
@@ -40,16 +42,16 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
 
         private async Task HandleValidSubmitAsync()
         {
-            if (Model.Password == Constants.AdminPassword)
+            var loginResult = await IdentityManager.SignInWithPassword(
+                Model.Email!, Model.Password!, HttpContext.RequestAborted);
+
+            if (loginResult.Status == IdentityResultStatus.Success)
             {
-                var claims = new Claim[] { new(ClaimTypes.Name, Model.Email!) };
-                var claimsIdentity = new ClaimsIdentity(claims, Constants.AuthenticationScheme);
-                await HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity));
                 NavigationManager.NavigateTo(ReturnUrl, forceLoad: true);
             }
             else
             {
-                _sweetAlertOptions.Title = "Sign In Failed";
+                _sweetAlertOptions.Title = "Login Failed";
                 _sweetAlertOptions.Text = "Invalid login attempt. Please try again.";
                 _sweetAlertOptions.Icon = "error";
             }

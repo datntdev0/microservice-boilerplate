@@ -1,8 +1,7 @@
-using datntdev.Microservices.Identity.Contracts;
 using datntdev.Microservices.Identity.Web.Host;
 using datntdev.Microservices.Identity.Web.Host.Components;
-using datntdev.Microservices.Identity.Web.Host.Middlewares;
 using datntdev.Microservices.ServiceDefaults.Hosting;
+using datntdev.Microservices.ServiceDefaults.Session;
 
 ServiceBootstrapBuilder.CreateWebApplication<Startup>(args).Run();
 
@@ -22,7 +21,7 @@ internal class Startup(IWebHostEnvironment env) : WebServiceStartup(env)
         services.AddCascadingAuthenticationState();
 
         // Add Middlewares as Transient Instances
-        services.AddTransient<AppSettingCookieMiddleware>();
+        services.AddTransient<AppSessionMiddleware>();
     }
 
     public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -34,6 +33,7 @@ internal class Startup(IWebHostEnvironment env) : WebServiceStartup(env)
 
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseMiddleware<AppSessionMiddleware>();
 
         app.UseAntiforgery();
 
@@ -43,8 +43,6 @@ internal class Startup(IWebHostEnvironment env) : WebServiceStartup(env)
             configure.MapRazorComponents<App>();
             configure.MapStaticAssets();
         });
-
-        app.UseMiddleware<AppSettingCookieMiddleware>();
     }
 }
 

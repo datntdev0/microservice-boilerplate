@@ -1,6 +1,8 @@
 ﻿using datntdev.Microservices.Common;
 using datntdev.Microservices.Common.Registars;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
 
 namespace datntdev.Microservices.ServiceDefaults.Session
 {
@@ -11,6 +13,8 @@ namespace datntdev.Microservices.ServiceDefaults.Session
 
         public AppSessionUserInfo? UserInfo { get; private set; }
 
+        public AppSessionAppInfo AppInfo { get; private set; } = AppSessionAppInfo.Default;
+
         public int? TenantId => TenantInfo?.TenantId;
 
         public bool IsHostTenant => TenantInfo?.TenantId == Constants.Tenancy.HostTenantId;
@@ -20,9 +24,18 @@ namespace datntdev.Microservices.ServiceDefaults.Session
             TenantInfo = tenantInfo;
         }
 
-        public void SetUserInfo(AppSessionUserInfo? userInfo)
+        public void SetUserInfo(HttpContext httpContext)
         {
-            UserInfo = userInfo;
+            var currentUser = httpContext.User;
+            UserInfo = currentUser.Identity?.IsAuthenticated == false ? null :
+                new AppSessionUserInfo
+                {
+                    UserId = long.Parse(currentUser.FindFirstValue(ClaimTypes.NameIdentifier)!),
+                    Username = currentUser.FindFirstValue(ClaimTypes.Name)!,
+                    EmailAddress = currentUser.FindFirstValue(ClaimTypes.Email)!,
+                    FirstName = currentUser.FindFirstValue(ClaimTypes.GivenName)!,
+                    LastName = currentUser.FindFirstValue(ClaimTypes.Surname)!,
+                };
         }
     }
 }

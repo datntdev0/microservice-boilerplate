@@ -20,7 +20,7 @@ namespace datntdev.Microservices.Migrator
             var migrationsAssembly = GetType().Assembly.GetName().Name;
             services.ConfigureDbContext<IdentityApplicationDbContext>(
                 opt => opt.UseSqlServer(configs.GetConnectionString("IdentityService"),
-                    o => o. MigrationsAssembly(migrationsAssembly)));
+                    o => o.MigrationsAssembly(migrationsAssembly)));
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace datntdev.Microservices.Common.Modular
+﻿namespace datntdev.Microservices.Common.Modular
 {
     /// <summary>
     /// Used to define dependencies of an ABP module to other modules.
@@ -12,6 +10,6 @@ namespace datntdev.Microservices.Common.Modular
         /// <summary>
         /// Types of depended modules.
         /// </summary>
-        public Type[] DependedModuleTypes { get; private set; } = dependedModuleTypes;
+        public Type[] DependedModuleTypes { get; } = dependedModuleTypes;
     }
 }

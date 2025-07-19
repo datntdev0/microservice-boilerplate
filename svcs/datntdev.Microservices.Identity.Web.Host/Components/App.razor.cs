@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using datntdev.Microservices.ServiceDefaults.Session;
+using Microsoft.AspNetCore.Components;
 
 namespace datntdev.Microservices.Identity.Web.Host.Components
 {
     public partial class App
     {
         [Inject]
-        private Services.AppSettingService AppSettingService { get; set; } = default!;
+        private AppSessionContext AppSession { get; set; } = default!;
     }
 }

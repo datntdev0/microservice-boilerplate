@@ -1,20 +1,18 @@
-﻿using datntdev.Microservices.Common.Modular;
+﻿using datntdev.Microservices.Admin.Application;
+using datntdev.Microservices.Common.Modular;
 using Microsoft.IdentityModel.Tokens;
 
 namespace datntdev.Microservices.Admin.Web.Host
 {
+    [DependOn(typeof(AdminApplicationModule))]
     public class AdminWebHostModule : BaseModule
     {
         public override void ConfigureServices(IServiceCollection services, IConfigurationRoot configs)
         {
-            services.AddOpenIddictValidation(configs);
+            ConfigureAuthentication(services, configs);
         }
-    }
 
-    internal static class AdminWebHostModuleExtensions
-    {
-        public static IServiceCollection AddOpenIddictValidation(
-            this IServiceCollection services, IConfigurationRoot configs)
+        private static void ConfigureAuthentication(IServiceCollection services, IConfigurationRoot configs)
         {
             var encryptionKey = Convert.FromBase64String(configs["OpenIddict:EncryptionKey"]!);
 
@@ -26,8 +24,6 @@ namespace datntdev.Microservices.Admin.Web.Host
                     options.UseSystemNetHttp();
                     options.UseAspNetCore();
                 });
-
-            return services;
         }
     }
 }

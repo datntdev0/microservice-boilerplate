@@ -1,8 +1,8 @@
-﻿using datntdev.Microservices.Identity.Application.Authorization.Users;
+﻿using datntdev.Microservices.Identity.Application.Identity;
+using datntdev.Microservices.Identity.Application.Identity.Models;
 using datntdev.Microservices.Identity.Web.Host.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
@@ -17,7 +17,10 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
         private NavigationManager NavigationManager { get; set; } = default!;
 
         [Inject]
-        private SignInManager<AppUserEntity> SignInManager { get; set; } = default!;
+        private IdentityManager IdentityManager { get; set; } = default!;
+
+        [CascadingParameter]
+        private HttpContext HttpContext { get; set; } = default!;
 
         [SupplyParameterFromForm]
         private InputModel Model { get; set; } = new();
@@ -39,16 +42,16 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
 
         private async Task HandleValidSubmitAsync()
         {
-            var result = await SignInManager.PasswordSignInAsync(
-                Model.Email!, Model.Password!, isPersistent: false, lockoutOnFailure: false);
+            var loginResult = await IdentityManager.SignInWithPassword(
+                Model.Email!, Model.Password!, HttpContext.RequestAborted);
 
-            if (result.Succeeded)
+            if (loginResult.Status == IdentityResultStatus.Success)
             {
                 NavigationManager.NavigateTo(ReturnUrl, forceLoad: true);
             }
             else
             {
-                _sweetAlertOptions.Title = "Sign In Failed";
+                _sweetAlertOptions.Title = "Login Failed";
                 _sweetAlertOptions.Text = "Invalid login attempt. Please try again.";
                 _sweetAlertOptions.Icon = "error";
             }

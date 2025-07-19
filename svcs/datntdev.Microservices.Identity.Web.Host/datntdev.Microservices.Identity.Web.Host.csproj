@@ -7,11 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+		<PackageReference Include="Scalar.AspNetCore" Version="2.5.5" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\libs\datntdev.Microservices.ServiceDefaults\datntdev.Microservices.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\datntdev.Microservices.Identity.Application\datntdev.Microservices.Identity.Application.csproj" />
 	</ItemGroup>
 

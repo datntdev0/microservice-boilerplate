@@ -1,7 +1,8 @@
 using datntdev.Microservices.Identity.Web.Host;
 using datntdev.Microservices.Identity.Web.Host.Components;
-using datntdev.Microservices.Identity.Web.Host.Middlewares;
 using datntdev.Microservices.ServiceDefaults.Hosting;
+using datntdev.Microservices.ServiceDefaults.Session;
+using Scalar.AspNetCore;
 
 ServiceBootstrapBuilder.CreateWebApplication<Startup>(args).Run();
 
@@ -16,14 +17,13 @@ internal class Startup(IWebHostEnvironment env) : WebServiceStartup(env)
         // Add services to the container.
         services.AddRazorComponents();
         services.AddControllers();
+        services.AddOpenApi();
 
         // Add Authentication and Authorization services
         services.AddCascadingAuthenticationState();
-        services.AddAuthentication().AddCookie(x => x.LoginPath = "/auth/signin");
-        services.AddAuthorization().AddAuthorizationCore();
 
         // Add Middlewares as Transient Instances
-        services.AddTransient<AppSettingCookieMiddleware>();
+        services.AddTransient<AppSessionMiddleware>();
     }
 
     public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -35,17 +35,18 @@ internal class Startup(IWebHostEnvironment env) : WebServiceStartup(env)
 
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseMiddleware<AppSessionMiddleware>();
 
         app.UseAntiforgery();
 
         app.UseEndpoints(configure =>
         {
             configure.MapControllers();
+            configure.MapOpenApi();
+            configure.MapScalarApiReference();
             configure.MapRazorComponents<App>();
             configure.MapStaticAssets();
         });
-
-        app.UseMiddleware<AppSettingCookieMiddleware>();
     }
 }
 

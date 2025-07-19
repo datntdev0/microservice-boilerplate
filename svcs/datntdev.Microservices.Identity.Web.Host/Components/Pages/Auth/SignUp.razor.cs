@@ -1,8 +1,9 @@
-﻿using datntdev.Microservices.Identity.Application.Authorization.Users;
+﻿using datntdev.Microservices.Identity.Application.Identity;
+using datntdev.Microservices.Identity.Application.Identity.Models;
+using datntdev.Microservices.Identity.Contracts;
 using datntdev.Microservices.Identity.Web.Host.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
@@ -13,11 +14,14 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
         
         private EditContext _editContext = default!;
 
-        [Inject]    
+        [Inject]
         private NavigationManager NavigationManager { get; set; } = default!;
 
         [Inject]
-        private UserManager<AppUserEntity> UserManager { get; set; } = default!;
+        private IdentityManager IdentityManager { get; set; } = default!;
+
+        [CascadingParameter]
+        private HttpContext HttpContext { get; set; } = default!;
 
         [SupplyParameterFromForm]
         private InputModel Model { get; set; } = new();
@@ -36,23 +40,24 @@ namespace datntdev.Microservices.Identity.Web.Host.Components.Pages.Auth
 
         private async Task HandleValidSubmit()
         {
-            var newUser = new AppUserEntity
+            var newUser = new Application.Authorization.Users.Models.AppUserEntity
             {
-                UserName = Model.Email,
-                Email = Model.Email,
-                FirstName = Model.FirstName,
-                LastName = Model.LastName,
+                Username = Model.Email!,
+                EmailAddress = Model.Email!,
+                FirstName = Model.FirstName!,
+                LastName = Model.LastName!,
             };
-            var result = await UserManager.CreateAsync(newUser, Model.Password!);
+            var registerResult = await IdentityManager.SignUpWithPassword(
+                newUser, Model.Password!, HttpContext.RequestAborted);
 
-            if (result.Succeeded)
+            if (registerResult.Status == IdentityResultStatus.Success)
             {
-                NavigationManager.NavigateTo("/auth/signin", forceLoad: true);
+                NavigationManager.NavigateTo(Constants.SignInPath, forceLoad: true);
             }
             else
             {
-                _sweetAlertOptions.Title = "Sign Up Failed";
-                _sweetAlertOptions.Text = string.Join(", ", result.Errors.Select(e => e.Description));
+                _sweetAlertOptions.Title = "Registration Failed";
+                _sweetAlertOptions.Text = registerResult.ErrorMessage;
                 _sweetAlertOptions.Icon = "error";
             }
         }

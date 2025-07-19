@@ -9,6 +9,8 @@
   </Folder>
   <Folder Name="/services/" Id="02ea681e-c7d8-13c7-8484-4ac65e1b71e8" />
   <Folder Name="/services/admin/">
+    <Project Path="svcs/datntdev.Microservices.Admin.Application/datntdev.Microservices.Admin.Application.csproj" Id="a432951a-b33e-42e6-91f8-495b1e00d736" />
+    <Project Path="svcs/datntdev.Microservices.Admin.Contracts/datntdev.Microservices.Admin.Contracts.csproj" Id="937c90d8-e8d4-4b41-a558-cc5b5294db92" />
     <Project Path="svcs/datntdev.Microservices.Admin.Web.Host/datntdev.Microservices.Admin.Web.Host.csproj" />
   </Folder>
   <Folder Name="/services/identity/">

@@ -1,7 +1,10 @@
 ﻿using datntdev.Microservices.Common.Modular;
 using datntdev.Microservices.Identity.Application.Authorization.Roles;
 using datntdev.Microservices.Identity.Application.Authorization.Users;
+using datntdev.Microservices.Identity.Application.Authorization.Users.Models;
+using datntdev.Microservices.Identity.Application.Identity;
 using datntdev.Microservices.Identity.Contracts;
+using datntdev.Microservices.ServiceDefaults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace datntdev.Microservices.Identity.Application
 {
-    [DependOn(typeof(IdentityContractsModule))]
+    [DependOn(typeof(IdentityContractsModule), typeof(ServiceDefaultModule))]
     public class IdentityApplicationModule : BaseModule
     {
         public override void ConfigureServices(IServiceCollection services, IConfigurationRoot configs)
@@ -25,10 +28,10 @@ namespace datntdev.Microservices.Identity.Application
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services)
         {
-            services.AddIdentity<AppUserEntity, AppRoleEntity>()
-                .AddSignInManager()
-                .AddDefaultTokenProviders()
-                .AddEntityFrameworkStores<IdentityApplicationDbContext>();
+            services.AddScoped<UserManager>().AddScoped<RoleManager>()
+                .AddScoped<IdentityManager>()
+                .AddSingleton<PasswordHasher<AppUserEntity>>()
+                .AddHttpContextAccessor();
             return services;
         }
 
@@ -46,7 +49,7 @@ namespace datntdev.Microservices.Identity.Application
                 .AddServer(options =>
                 {
                     // TODO: Disable access token encryption for debug
-                    // edit this code for applying multi higher environments
+                    // edit this code for applying higher environments
                     options.DisableAccessTokenEncryption()
                         .AddEphemeralSigningKey()
                         .AddEncryptionKey(new SymmetricSecurityKey(encryptionKey));
@@ -57,8 +60,8 @@ namespace datntdev.Microservices.Identity.Application
                         .AllowClientCredentialsFlow();
 
                     options
-                        .SetTokenEndpointUris("/connect/token")
-                        .SetAuthorizationEndpointUris("/connect/authorize");
+                        .SetTokenEndpointUris(Constants.OAuthTokenEndpoint)
+                        .SetAuthorizationEndpointUris(Constants.OAuthAuthEndpoint);
 
                     options.UseAspNetCore()
                         .EnableTokenEndpointPassthrough()

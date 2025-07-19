@@ -1,5 +1,6 @@
 ﻿using datntdev.Microservices.Common.Modular;
 using datntdev.Microservices.Identity.Application;
+using datntdev.Microservices.Identity.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace datntdev.Microservices.Identity.Web.Host
@@ -11,9 +12,7 @@ namespace datntdev.Microservices.Identity.Web.Host
         {
             // Register Entity Framework Core with OpenIddict support
             ConfigureDbContextSqlServer(services, configs);
-
-            // Register Application services
-            services.AddScoped<Services.AppSettingService>();
+            ConfigureAuthentication(services, configs);
         }
 
         private static void ConfigureDbContextSqlServer(IServiceCollection services, IConfigurationRoot configs)
@@ -21,6 +20,18 @@ namespace datntdev.Microservices.Identity.Web.Host
             var connectionString = configs.GetConnectionString("DefaultConnection");
             services.ConfigureDbContext<IdentityApplicationDbContext>(
                 opt => opt.UseSqlServer(connectionString));
+        }
+
+        private static void ConfigureAuthentication(IServiceCollection services, IConfigurationRoot configs)
+        {
+            services.AddAuthentication(Constants.AuthenticationScheme)
+                .AddCookie(Constants.AuthenticationScheme, opt =>
+                {
+                    opt.LoginPath = Constants.SignInPath;
+                    opt.LogoutPath = Constants.SignOutPath;
+                });
+
+            services.AddAuthorization().AddAuthorizationCore();
         }
     }
 }

@@ -12,8 +12,12 @@
         public string? UpdatedBy { get; set; }
     }
 
-    public interface IAuditEntity : IAuditCreatedEntity, IAuditUpdatedEntity
+    public interface IDeleteEntity
     {
         public bool IsDeleted { get; set; }
+    }
+
+    public interface IAuditEntity : IDeleteEntity, IAuditCreatedEntity, IAuditUpdatedEntity
+    {
     }
 }

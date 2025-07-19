@@ -19,23 +19,16 @@ namespace datntdev.Microservices.ServiceDefaults.Session
 
         public bool IsHostTenant => TenantInfo?.TenantId == Constants.Tenancy.HostTenantId;
 
-        public void SetTenantInfo(AppSessionTenancyInfo? tenantInfo)
+        public AppSessionContext SetTenantInfo(AppSessionTenancyInfo? tenantInfo)
         {
             TenantInfo = tenantInfo;
+            return this;
         }
 
-        public void SetUserInfo(HttpContext httpContext)
+        public AppSessionContext SetUserInfo(AppSessionUserInfo? userInfo)
         {
-            var currentUser = httpContext.User;
-            UserInfo = currentUser.Identity?.IsAuthenticated == false ? null :
-                new AppSessionUserInfo
-                {
-                    UserId = long.Parse(currentUser.FindFirstValue(ClaimTypes.NameIdentifier)!),
-                    Username = currentUser.FindFirstValue(ClaimTypes.Name)!,
-                    EmailAddress = currentUser.FindFirstValue(ClaimTypes.Email)!,
-                    FirstName = currentUser.FindFirstValue(ClaimTypes.GivenName)!,
-                    LastName = currentUser.FindFirstValue(ClaimTypes.Surname)!,
-                };
+            UserInfo = userInfo;
+            return this;
         }
     }
 }

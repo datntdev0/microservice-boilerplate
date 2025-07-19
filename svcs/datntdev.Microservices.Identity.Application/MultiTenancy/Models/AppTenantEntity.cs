@@ -1,4 +1,5 @@
 ﻿using datntdev.Microservices.Common.Models;
+using datntdev.Microservices.Identity.Application.Authorization.Roles.Models;
 using datntdev.Microservices.Identity.Application.Authorization.Users.Models;
 
 namespace datntdev.Microservices.Identity.Application.MultiTenancy.Models

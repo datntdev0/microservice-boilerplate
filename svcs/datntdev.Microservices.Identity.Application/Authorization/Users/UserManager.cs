@@ -15,6 +15,11 @@ namespace datntdev.Microservices.Identity.Application.Authorization.Users
             return _dbContext.AppUsers.FirstOrDefaultAsync(u => u.Username == username, ct);
         }
 
+        public Task<AppUserEntity> GetAsync(string username, CancellationToken ct)
+        {
+            return _dbContext.AppUsers.SingleAsync(u => u.Username == username, ct);
+        }
+
         public Task<AppUserEntity> CreateAsync(AppUserEntity user, string password, CancellationToken ct)
         {
             user.PasswordHash = _passwordHasher.HashPassword(user, password);

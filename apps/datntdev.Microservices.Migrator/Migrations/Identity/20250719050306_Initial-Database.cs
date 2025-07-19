@@ -6,11 +6,32 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace datntdev.Microservices.Migrator.Migrations.Identity
 {
     /// <inheritdoc />
-    public partial class Initial_Database : Migration
+    public partial class InitialDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AppRoles",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TenantId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppRoles", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AppTenants",
                 columns: table => new
@@ -40,7 +61,7 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     EmailAddress = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -98,6 +119,33 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OpenIddictScopes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppRoleUsers",
+                columns: table => new
+                {
+                    RoleId = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    TenantId = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppRoleUsers", x => new { x.RoleId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_AppRoleUsers_AppRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AppRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AppRoleUsers_AppUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -184,6 +232,17 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppRoles_TenantId_Name",
+                table: "AppRoles",
+                columns: new[] { "TenantId", "Name" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppRoleUsers_UserId",
+                table: "AppRoleUsers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AppTenantUsers_UserId",
                 table: "AppTenantUsers",
                 column: "UserId");
@@ -193,11 +252,6 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                 table: "AppUsers",
                 column: "EmailAddress",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppUsers_PasswordHash",
-                table: "AppUsers",
-                column: "PasswordHash");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppUsers_Username",
@@ -246,6 +300,9 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AppRoleUsers");
+
+            migrationBuilder.DropTable(
                 name: "AppTenantUsers");
 
             migrationBuilder.DropTable(
@@ -253,6 +310,9 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
 
             migrationBuilder.DropTable(
                 name: "OpenIddictTokens");
+
+            migrationBuilder.DropTable(
+                name: "AppRoles");
 
             migrationBuilder.DropTable(
                 name: "AppTenants");

@@ -1,4 +1,5 @@
 ﻿using datntdev.Microservices.Common.Modular;
+using datntdev.Microservices.Identity.Application.Authorization.Roles;
 using datntdev.Microservices.Identity.Application.Authorization.Users;
 using datntdev.Microservices.Identity.Application.Authorization.Users.Models;
 using datntdev.Microservices.Identity.Application.Identity;
@@ -27,7 +28,8 @@ namespace datntdev.Microservices.Identity.Application
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services)
         {
-            services.AddScoped<UserManager>().AddScoped<IdentityManager>()
+            services.AddScoped<UserManager>().AddScoped<RoleManager>()
+                .AddScoped<IdentityManager>()
                 .AddSingleton<PasswordHasher<AppUserEntity>>()
                 .AddHttpContextAccessor();
             return services;

@@ -36,13 +36,21 @@ namespace datntdev.Microservices.Identity.Application
             builder.Entity<AppTenantEntity>();
             builder.Entity<AppUserEntity>(b =>
             {
-                b.HasIndex(u => u.Username).IsUnique();
-                b.HasIndex(u => u.EmailAddress).IsUnique();
+                b.HasIndex(e => e.Username).IsUnique();
+                b.HasIndex(e => e.EmailAddress).IsUnique();
+                
                 b.HasMany(e => e.Tenants).WithMany(e => e.Users)
                     .UsingEntity<AppTenantUserEntity>("AppTenantUsers",
                         l => l.HasOne<AppTenantEntity>().WithMany(e => e.TenantUsers).HasForeignKey(e => e.TenantId),
                         r => r.HasOne<AppUserEntity>().WithMany(e => e.TenantUsers).HasForeignKey(e => e.UserId));
+                
                 b.HasQueryFilter(u => session.IsHostTenant || u.Tenants.Any(t => t.Id == session.TenantId));
+            });
+
+            builder.Entity<AppUserClaimEntity>(b =>
+            {
+                b.HasOne(e => e.User).WithMany(e => e.Claims).HasForeignKey(e => e.UserId);
+                b.HasQueryFilter(u => u.TenantId == session.TenantId);
             });
 
             builder.Entity<AppRoleEntity>(b =>
@@ -51,6 +59,13 @@ namespace datntdev.Microservices.Identity.Application
                     .UsingEntity<AppRoleUserEntity>("AppRoleUsers",
                         l => l.HasOne<AppUserEntity>().WithMany(e => e.RoleUsers).HasForeignKey(e => e.UserId),
                         r => r.HasOne<AppRoleEntity>().WithMany(e => e.RoleUsers).HasForeignKey(e => e.RoleId));
+
+                b.HasQueryFilter(u => u.TenantId == session.TenantId);
+            });
+
+            builder.Entity<AppRoleClaimEntity>(b =>
+            {
+                b.HasOne(e => e.Role).WithMany(e => e.Claims).HasForeignKey(e => e.RoleId);
                 b.HasQueryFilter(u => u.TenantId == session.TenantId);
             });
         }

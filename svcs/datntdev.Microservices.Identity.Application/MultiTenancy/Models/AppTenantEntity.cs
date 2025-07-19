@@ -4,7 +4,7 @@ using datntdev.Microservices.Identity.Application.Authorization.Users.Models;
 
 namespace datntdev.Microservices.Identity.Application.MultiTenancy.Models
 {
-    public class AppTenantEntity : BaseAuditEntity<int>
+    public class AppTenantEntity : FullAuditEntity<int>
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

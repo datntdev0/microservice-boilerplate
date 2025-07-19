@@ -6,5 +6,10 @@
         {
             public const int HostTenantId = 1;
         }
+
+        public class ClaimTypes
+        {
+            public const string Permissions = "Permissions";
+        }
     }
 }

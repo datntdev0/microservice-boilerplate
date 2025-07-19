@@ -4,7 +4,7 @@ using datntdev.Microservices.Identity.Application.MultiTenancy.Models;
 
 namespace datntdev.Microservices.Identity.Application.Authorization.Users.Models
 {
-    public class AppUserEntity : BaseAuditEntity<long>
+    public class AppUserEntity : FullAuditEntity<long>
     {
         public string Username { get; set; } = string.Empty;
         public string EmailAddress { get; set; } = string.Empty;
@@ -16,5 +16,6 @@ namespace datntdev.Microservices.Identity.Application.Authorization.Users.Models
         public List<AppTenantUserEntity> TenantUsers { get; set; } = [];
         public List<AppRoleEntity> Roles { get; set; } = [];
         public List<AppRoleUserEntity> RoleUsers { get; set; } = [];
+        public List<AppUserClaimEntity> Claims { get; set; } = [];
     }
 }

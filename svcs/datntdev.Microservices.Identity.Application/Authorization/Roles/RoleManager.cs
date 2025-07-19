@@ -1,4 +1,5 @@
-﻿using datntdev.Microservices.Identity.Application.Authorization.Roles.Models;
+﻿using datntdev.Microservices.Identity.Application.Authorization.Permissions;
+using datntdev.Microservices.Identity.Application.Authorization.Roles.Models;
 using datntdev.Microservices.Identity.Application.Authorization.Users.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,12 +20,20 @@ namespace datntdev.Microservices.Identity.Application.Authorization.Roles
 
         public static AppRoleEntity CreateAdminRole(int tenantId, AppUserEntity? user = null)
         {
+            var permissions = AppPermissionResolver.GetAppPermissionEnums(AppPermissionResolver.RootPermissions);
+            var claim = new AppRoleClaimEntity
+            {
+                TenantId = tenantId,
+                ClaimType = Common.Constants.ClaimTypes.Permissions,
+                ClaimValue = string.Join(",", permissions.Select(p => ((int)p).ToString())),
+            };
             return new AppRoleEntity
             {
                 TenantId = tenantId,
                 Name = "Admin",
                 Description = "Administrator role with full permissions",
                 Users = user != null ? [user] : [],
+                Claims = [claim],
             };
         }
 

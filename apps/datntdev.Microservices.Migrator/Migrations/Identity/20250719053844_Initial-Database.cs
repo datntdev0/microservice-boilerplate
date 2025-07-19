@@ -20,12 +20,12 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                     TenantId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,12 +41,12 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,12 +64,12 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -122,6 +122,33 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                 });
 
             migrationBuilder.CreateTable(
+                name: "AppRoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TenantId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<long>(type: "bigint", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppRoleClaims_AppRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AppRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AppRoleUsers",
                 columns: table => new
                 {
@@ -168,6 +195,33 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AppTenantUsers_AppUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppUserClaims",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TenantId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppUserClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppUserClaims_AppUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AppUsers",
                         principalColumn: "Id",
@@ -232,6 +286,11 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppRoleClaims_RoleId",
+                table: "AppRoleClaims",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AppRoles_TenantId_Name",
                 table: "AppRoles",
                 columns: new[] { "TenantId", "Name" },
@@ -245,6 +304,11 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
             migrationBuilder.CreateIndex(
                 name: "IX_AppTenantUsers_UserId",
                 table: "AppTenantUsers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppUserClaims_UserId",
+                table: "AppUserClaims",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -300,10 +364,16 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AppRoleClaims");
+
+            migrationBuilder.DropTable(
                 name: "AppRoleUsers");
 
             migrationBuilder.DropTable(
                 name: "AppTenantUsers");
+
+            migrationBuilder.DropTable(
+                name: "AppUserClaims");
 
             migrationBuilder.DropTable(
                 name: "OpenIddictScopes");

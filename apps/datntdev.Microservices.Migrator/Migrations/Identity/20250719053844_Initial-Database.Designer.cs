@@ -12,7 +12,7 @@ using datntdev.Microservices.Identity.Application;
 namespace datntdev.Microservices.Migrator.Migrations.Identity
 {
     [DbContext(typeof(IdentityApplicationDbContext))]
-    [Migration("20250719050306_Initial-Database")]
+    [Migration("20250719053844_Initial-Database")]
     partial class InitialDatabase
     {
         /// <inheritdoc />
@@ -281,6 +281,51 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                     b.ToTable("OpenIddictTokens", (string)null);
                 });
 
+            modelBuilder.Entity("datntdev.Microservices.Identity.Application.Authorization.Roles.Models.AppRoleClaimEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AppRoleClaims");
+                });
+
             modelBuilder.Entity("datntdev.Microservices.Identity.Application.Authorization.Roles.Models.AppRoleEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -325,6 +370,51 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                         .IsUnique();
 
                     b.ToTable("AppRoles");
+                });
+
+            modelBuilder.Entity("datntdev.Microservices.Identity.Application.Authorization.Users.Models.AppUserClaimEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AppUserClaims");
                 });
 
             modelBuilder.Entity("datntdev.Microservices.Identity.Application.Authorization.Users.Models.AppUserEntity", b =>
@@ -482,6 +572,28 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
                     b.Navigation("Authorization");
                 });
 
+            modelBuilder.Entity("datntdev.Microservices.Identity.Application.Authorization.Roles.Models.AppRoleClaimEntity", b =>
+                {
+                    b.HasOne("datntdev.Microservices.Identity.Application.Authorization.Roles.Models.AppRoleEntity", "Role")
+                        .WithMany("Claims")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("datntdev.Microservices.Identity.Application.Authorization.Users.Models.AppUserClaimEntity", b =>
+                {
+                    b.HasOne("datntdev.Microservices.Identity.Application.Authorization.Users.Models.AppUserEntity", "User")
+                        .WithMany("Claims")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreApplication", b =>
                 {
                     b.Navigation("Authorizations");
@@ -496,11 +608,15 @@ namespace datntdev.Microservices.Migrator.Migrations.Identity
 
             modelBuilder.Entity("datntdev.Microservices.Identity.Application.Authorization.Roles.Models.AppRoleEntity", b =>
                 {
+                    b.Navigation("Claims");
+
                     b.Navigation("RoleUsers");
                 });
 
             modelBuilder.Entity("datntdev.Microservices.Identity.Application.Authorization.Users.Models.AppUserEntity", b =>
                 {
+                    b.Navigation("Claims");
+
                     b.Navigation("RoleUsers");
 
                     b.Navigation("TenantUsers");

@@ -3,5 +3,5 @@
  */
 
 function signout() {
-    fetch('/api/me/signout', { method: 'POST' }).then(() => location.reload())
+    fetch('/me/signout', { method: 'POST' }).then(() => location.reload())
 }

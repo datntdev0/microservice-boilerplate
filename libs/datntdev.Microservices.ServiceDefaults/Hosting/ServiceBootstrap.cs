@@ -1,5 +1,8 @@
 ﻿using datntdev.Microservices.Common.Modular;
 using datntdev.Microservices.Common.Registars;
+using datntdev.Microservices.ServiceDefaults.Providers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -10,14 +13,16 @@ namespace datntdev.Microservices.ServiceDefaults.Hosting
     {
         private readonly IEnumerable<BaseModule> _modules = CreateAllModuleInstances();
 
-        public void ConfigureServices(IServiceCollection services, IConfigurationRoot configs) 
-        { 
+        public void ConfigureServices(IServiceCollection services, IConfigurationRoot configs)
+        {
             _modules.ToList().ForEach(module => module.ConfigureServices(services, configs));
-            _modules.ToList().ForEach(module => RegisterInjectServiceTypes(services, module.GetType().Assembly));
+
+            RegisterInjectServiceTypes(services, _modules);
+            RegisterAppServiceAsControllers(services, _modules);
         }
 
-        public void Configure(IServiceProvider serviceProvider, IConfigurationRoot configs) 
-        { 
+        public void Configure(IServiceProvider serviceProvider, IConfigurationRoot configs)
+        {
             _modules.ToList().ForEach(module => module.Configure(serviceProvider, configs));
         }
 
@@ -44,12 +49,15 @@ namespace datntdev.Microservices.ServiceDefaults.Hosting
                 .Concat(moduleTypes);
         }
 
-        private static void RegisterInjectServiceTypes(IServiceCollection services, Assembly entryAssembly)
+        private static void RegisterInjectServiceTypes(
+            IServiceCollection services, IEnumerable<BaseModule> modules)
         {
-            var injectServiceTypes = entryAssembly.GetTypes()
+            var injectServiceTypes = modules
+                .SelectMany(x => x.GetType().Assembly.GetTypes())
+                .Where(type => type.IsClass && !type.IsAbstract)
                 .Where(type => type.GetTypeInfo().CustomAttributes
                     .Any(att => att.AttributeType == typeof(InjectServiceAttribute))
-                ).ToArray();
+                );
 
             foreach (var type in injectServiceTypes)
             {
@@ -71,6 +79,19 @@ namespace datntdev.Microservices.ServiceDefaults.Hosting
                         break;
                 }
             }
+        }
+
+        private static void RegisterAppServiceAsControllers(
+            IServiceCollection services, IEnumerable<BaseModule> modules)
+        {
+            var controllerProvider = new AppServiceControllerProvider();
+            services.AddControllers().ConfigureApplicationPartManager(apm =>
+            {
+                modules.Select(x => new AssemblyPart(x.GetType().Assembly))
+                    .ToList().ForEach(apm.ApplicationParts.Add);
+                apm.FeatureProviders.Add(controllerProvider);
+            });
+            services.Configure<MvcOptions>(options => options.Conventions.Add(controllerProvider));
         }
     }
 }

@@ -1,18 +1,16 @@
 ﻿using datntdev.Microservices.Common.Application;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Buffers.Text;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace datntdev.Microservices.ServiceDefaults.Providers
 {
     internal partial class AppServiceControllerProvider : ControllerFeatureProvider, IApplicationModelConvention
-    {
+    {Te
         protected override bool IsController(TypeInfo typeInfo)
         {
             if (typeInfo.IsClass == false || typeInfo.IsAbstract)

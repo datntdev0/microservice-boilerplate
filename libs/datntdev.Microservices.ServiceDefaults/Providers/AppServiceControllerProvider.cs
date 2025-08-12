@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 namespace datntdev.Microservices.ServiceDefaults.Providers
 {
     internal partial class AppServiceControllerProvider : ControllerFeatureProvider, IApplicationModelConvention
-    {Te
+    {
         protected override bool IsController(TypeInfo typeInfo)
         {
             if (typeInfo.IsClass == false || typeInfo.IsAbstract)

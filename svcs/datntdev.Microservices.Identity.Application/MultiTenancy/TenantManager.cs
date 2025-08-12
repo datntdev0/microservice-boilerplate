@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace datntdev.Microservices.Identity.Application.MultiTenancy
 {
     [InjectService(ServiceLifetime.Scoped)]
-    public class AppTenantManager(IServiceProvider services)
+    public class TenantManager(IServiceProvider services)
     {
         private readonly IdentityApplicationDbContext _dbContext = services.GetRequiredService<IdentityApplicationDbContext>();
 

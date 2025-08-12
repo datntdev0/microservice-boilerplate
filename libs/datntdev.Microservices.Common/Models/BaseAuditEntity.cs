@@ -1,11 +1,13 @@
 ﻿namespace datntdev.Microservices.Common.Models
 {
-    public class FullAuditEntity<TKey> : BaseAuditEntity<TKey>, IDeleteEntity where TKey : IEquatable<TKey>
+    public class FullAuditEntity<TKey> 
+        : BaseAuditEntity<TKey>, IDeleted where TKey : IEquatable<TKey>
     {
         public bool IsDeleted { get; set; }
     }
 
-    public class BaseAuditEntity<TKey> : IAuditCreatedEntity, IAuditUpdatedEntity where TKey : IEquatable<TKey>
+    public class BaseAuditEntity<TKey> 
+        : ICreated, IUpdated where TKey : IEquatable<TKey>
     {
         public TKey Id { get; set; } = default!;
         public DateTime? CreatedAt { get; set; }

@@ -1,4 +1,5 @@
-﻿using datntdev.Microservices.Identity.Contracts.Authorization.Users;
+﻿using datntdev.Microservices.Common.Application.Dtos;
+using datntdev.Microservices.Identity.Contracts.Authorization.Users;
 using datntdev.Microservices.Identity.Contracts.Authorization.Users.Dtos;
 
 namespace datntdev.Microservices.Identity.Application.Authorization.Users
@@ -20,7 +21,7 @@ namespace datntdev.Microservices.Identity.Application.Authorization.Users
             throw new NotImplementedException();
         }
 
-        public Task<List<UserListDto>> GetListAsync(UserListRequest input)
+        public Task<GetListResponse<UserListDto>> GetListAsync(UserListRequest input)
         {
             throw new NotImplementedException();
         }

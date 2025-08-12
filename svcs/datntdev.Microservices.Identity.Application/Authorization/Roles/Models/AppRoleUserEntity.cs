@@ -2,7 +2,7 @@
 
 namespace datntdev.Microservices.Identity.Application.Authorization.Roles.Models
 {
-    public class AppRoleUserEntity : IAuditCreatedEntity, ITenancyEntity
+    public class AppRoleUserEntity : ICreated, ITenancyEntity
     {
         public int TenantId { get; set; }
         public long RoleId { get; set; }

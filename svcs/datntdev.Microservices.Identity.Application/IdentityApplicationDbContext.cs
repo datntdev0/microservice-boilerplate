@@ -83,7 +83,7 @@ namespace datntdev.Microservices.Identity.Application
 
             foreach (var entry in changedEntities.Where(x => x.State == EntityState.Modified))
             {
-                if (entry.Entity is IAuditUpdatedEntity entity)
+                if (entry.Entity is IUpdated entity)
                 {
                     entity.UpdatedAt = DateTime.UtcNow;
                     entity.UpdatedBy = session.UserInfo?.Username;
@@ -92,7 +92,7 @@ namespace datntdev.Microservices.Identity.Application
 
             foreach (var entry in changedEntities.Where(x => x.State == EntityState.Added))
             {
-                if (entry.Entity is IAuditCreatedEntity entity)
+                if (entry.Entity is ICreated entity)
                 {
                     entity.CreatedAt = DateTime.UtcNow;
                     entity.CreatedBy = session.UserInfo?.Username;

@@ -2,7 +2,7 @@
 
 namespace datntdev.Microservices.Identity.Application.MultiTenancy.Models
 {
-    public class AppTenantUserEntity : IAuditCreatedEntity, ITenancyEntity
+    public class AppTenantUserEntity : ICreated, ITenancyEntity
     {
         public int TenantId { get; set; }
         public long UserId { get; set; }

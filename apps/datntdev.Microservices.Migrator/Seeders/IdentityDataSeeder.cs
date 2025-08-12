@@ -64,7 +64,7 @@ namespace datntdev.Microservices.Migrator.Seeders
                     Description = "Default Tenant for Host",
                     Users = [adminUser]
                 };
-                await services.GetRequiredService<AppTenantManager>().CreateAsync(tenant, ct);
+                await services.GetRequiredService<TenantManager>().CreateAsync(tenant, ct);
             }
 
             // Set the session context with the tenant and user information.

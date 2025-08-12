@@ -9,7 +9,7 @@
     public interface ISortedListRequest
     {
         public string? SortBy { get; set; }
-        public string? SortDirection { get; set; }
+        public int? SortDirection { get; set; } // 1 for ascending, -1 for descending
     }
 
     public interface ISearchListRequset

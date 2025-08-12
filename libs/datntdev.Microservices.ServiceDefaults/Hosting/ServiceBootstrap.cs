@@ -17,6 +17,7 @@ namespace datntdev.Microservices.ServiceDefaults.Hosting
         {
             _modules.ToList().ForEach(module => module.ConfigureServices(services, configs));
 
+            RegisterAutoMapper(services, _modules);
             RegisterInjectServiceTypes(services, _modules);
             RegisterAppServiceAsControllers(services, _modules);
         }
@@ -92,6 +93,12 @@ namespace datntdev.Microservices.ServiceDefaults.Hosting
                 apm.FeatureProviders.Add(controllerProvider);
             });
             services.Configure<MvcOptions>(options => options.Conventions.Add(controllerProvider));
+        }
+
+        private static void RegisterAutoMapper(
+            IServiceCollection services, IEnumerable<BaseModule> modules)
+        {
+            services.AddAutoMapper(cfg => { }, modules.Select(x => x.GetType().Assembly));
         }
     }
 }
